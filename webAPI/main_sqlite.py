@@ -1,7 +1,10 @@
 from bottle import run, route, get, post, delete, put, request, template, response, hook
 
 import json
+# from requests import request
 import sqlite3
+from datetime import datetime
+
 
 
 def dict_factory(cursor, row):
@@ -42,7 +45,7 @@ def get_user(id):
 def add_user_to_users():
     try:
         with sqlite3.connect('recess.db')as con:
-
+            time = str(datetime.now().time())
             #postdata = request.body.read()
             #username = json.loads(postdata)["username"]
             username = request.forms.get('username')
@@ -55,13 +58,11 @@ def add_user_to_users():
             email = request.forms.get("email")
             pass_ = request.forms.get("pass")
             description = request.forms.get("description") if request.forms.get("description") else None
-            reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
-
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass, description, reg_date)" \
+            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)" \
                     " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
-                 username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
+                 username, firstname, lastname, birth, sex, city, phone, email, pass_, description, time)
             cur.execute(query)
             con.commit()
 
@@ -70,9 +71,8 @@ def add_user_to_users():
             cur.close()
             return json.dumps(str(output))
 
-    except Exception as e:
-        return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
