@@ -1,9 +1,6 @@
 from bottle import run, route, get, post, delete, put, request, template, response, hook
-import bottle
-import os
-import pymysql
+
 import json
-from requests import request
 import sqlite3
 
 
@@ -45,7 +42,10 @@ def get_user(id):
 def add_user_to_users():
     try:
         with sqlite3.connect('recess.db')as con:
-            username = request.forms.get("username")
+
+            #postdata = request.body.read()
+            #username = json.loads(postdata)["username"]
+            username = request.forms.get('username')
             firstname = request.forms.get("firstname") if request.forms.get("firstname") else None
             lastname = request.forms.get("lastname") if request.forms.get("lastname") else None
             birth = request.forms.get("birth")
@@ -56,16 +56,15 @@ def add_user_to_users():
             pass_ = request.forms.get("pass")
             description = request.forms.get("description") if request.forms.get("description") else None
             reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
+
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)" \
+            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass, description, reg_date)" \
                     " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
                  username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
             cur.execute(query)
             con.commit()
-            user_query = "SELECT * FROM users where id = {}".format(
-                id)
-            cur.execute(user_query)
+
             response.status = 201
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
@@ -130,24 +129,23 @@ def get_game(game_id):
 def add_game():
     try:
         with sqlite3.connect('recess.db')as con:
-            game_id = request.forms.get("game_id")
-            game_type = request.forms.get("game_type") if request.forms.get("game_type") else None
-            game_name = request.forms.get("game_name") if request.forms.get("game_name") else None
+            game_type = request.forms.get("game_type") #if request.forms.get("game_type") else None
+            game_name = request.forms.get("game_name") #if request.forms.get("game_name") else None
             game_day = request.forms.get("game_day")
             start_time = request.forms.get("start_time")
             location = request.forms.get("location") if request.forms.get("location") else None
-            min_players = request.forms.get("min_players")
+            min_players = request.forms.get("min_players") if request.forms.get("min_players") else None
             max_players = request.forms.get("max_players") if request.forms.get("max_players") else None
             num_teams = request.forms.get("num_teams")
-            query = "INSERT into games (game_id) values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
-                game_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
+            query = """INSERT into games (game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams) 
+                    values , '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
+                format(game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             cur.execute(query)
             con.commit()
-            games_query = "SELECT * FROM games where id = {}".format(
-                game_id)
-            cur.execute(games_query)
+            #games_query = "SELECT * FROM games where id = {}".format(game_id)
+            #cur.execute(games_query)
             response.status = 201
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
@@ -172,6 +170,24 @@ def get_all_games():
             return json.dumps(output)
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+@route('/locations')
+@allow_cors
+def get_locations():
+    return ['Tel-Aviv','Jerusalem', 'Netanya', 'Jaffa']
+
+
+@route('/game_types')
+@allow_cors
+def get_locations():
+    return ["basketball", "dodgeball", "frisbee", "hide_and_seek", "hockey",
+            "running", "soccer", "table_tennis", "tennis", "volleyball",
+            "other"]
+
+
+
+
 
 
 if __name__ == '__main__':
