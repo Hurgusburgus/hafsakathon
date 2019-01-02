@@ -177,8 +177,9 @@ def find_games(game_type, date, day_of_week, hours, location):
             cur = con.cursor()
             sql = 'SELECT * FROM games WHERE 1=1 '
             if game_type != 'all':
+                game_type = game_type.lower()
                 game_type = '(' + str(game_type.split('--'))[1:-1] + ')'
-                sql += f'AND game_type in {game_type} '
+                sql += f'AND lower(game_type) in {game_type} '
             if date != 'all':
                 date = "'" + date + "'"
                 sql += f'AND game_day = date({date}) '
@@ -190,8 +191,9 @@ def find_games(game_type, date, day_of_week, hours, location):
                 finish = hours[2:]
                 sql += f"AND start_time between {start} AND {finish} "
             if location != 'all':
+                location = location.lower()
                 location = '(' + str(location.split('--'))[1:-1] + ')'
-                sql += f'AND location in {location} '
+                sql += f'AND lower(location) in {location} '
             cur.execute(sql)
             output = [dict(row) for row in cur.fetchall()]
             return json.dumps(str(output))
