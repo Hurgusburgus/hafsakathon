@@ -103,6 +103,7 @@ def get(game_id):
 def addgame():
     try:
         with connection.cursor() as cursor:
+            game_id = request.json.get("game_id")
             query = "INSERT into games (game_id) values ('{}')".format(
                 game_id)
                 # ADD ALL THE GAME COLUMNS 
