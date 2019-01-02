@@ -6,11 +6,11 @@ const GameListRow = ({game}) => {
   // <Link to={'/course/' + course.id}>{course.title}</Link>
   return (
     <tr>
-      <td>{game.gameType}</td>
+      <td>{game.game_type}</td>
       <td>{game.user}</td>
       <td>{game.location}</td>
-      <td>{game.gameName}</td>
-      <td>{game.date} {game.startTime}</td>
+      <td>{game.game_name}</td>
+      <td>{game.game_day} {game.start_day}</td>
     </tr>
   );
 };

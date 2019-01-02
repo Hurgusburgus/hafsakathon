@@ -95,7 +95,6 @@ def remove(id):
 #     except:
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
-
 @route('/games/<game_id>')
 def get(game_id):
     try:
