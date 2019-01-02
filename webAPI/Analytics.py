@@ -16,8 +16,12 @@ def initialize_analyticsreporting():
     Returns:
     An authorized Analytics Reporting API V4 service object.
     """
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(
-      KEY_FILE_LOCATION, SCOPES)
+    try:
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            KEY_FILE_LOCATION, SCOPES)
+    except FileNotFoundError:
+        print('Private key for analytics api not found')
+        return -1
 
     # Build the service object.
     analytics = build('analyticsreporting', 'v4', credentials=credentials)
@@ -37,6 +41,8 @@ def get_report(analytics=initialize_analyticsreporting(), days=7, metrics=['ga:s
     Returns:
     The Analytics Reporting API V4 response.
     """
+    if analytics == -1:
+        return None
     date_range = str(int(days)) + 'daysAgo'
     metrics = [{'expression': m} for m in metrics]
     if dimensions:
