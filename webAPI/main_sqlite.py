@@ -165,10 +165,10 @@ def getAll():
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM games"
-            cur.execute(sql)
+            cur.execute(query)
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
-            return json.dumps(str(output))
+            return json.dumps(output)
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 

@@ -5,20 +5,20 @@ import delay from './delay';
 // All calls return promises.
 const games = [
   {
-    gameId: 1,
-    gameType: "Football",
-    gameName: "Gabe's Football Game",
-    gameDay: "January 2",
+    game_id: 1,
+    game_type: "Football",
+    game_name: "Gabe's Football Game",
+    game_day: "January 2",
     startTime: "6:20",
     location: "Haifa",
     user: "GabeR"
   },
   {
-    gameId: 2,
-    gameType: "Basketball",
-    gameName: "Community Basketball game in Florentin",
-    gameDay: "January 2",
-    startTime: "18:30",
+    game_id: 2,
+    game_type: "Basketball",
+    game_name: "Community Basketball game in Florentin",
+    game_day: "January 2",
+    start_time: "18:30",
     location: "Tel Aviv",
     user: "ITC"
   }
