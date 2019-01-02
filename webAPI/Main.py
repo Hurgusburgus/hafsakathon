@@ -14,22 +14,15 @@ connection = pymysql.connect(host='db4free.net',
                              charset='utf8',
                              cursorclass=pymysql.cursors.DictCursor)
 
-_allow_origin = '*'
-_allow_methods = 'PUT, GET, POST, DELETE, OPTIONS'
-_allow_headers = 'Authorization, Origin, Accept, Content-Type, X-Requested-With'
 
-@hook('after_request')
-def enable_cors():
-    '''Add headers to enable CORS'''
+def allow_cors(func):
+    """ this is a decorator which enable CORS for specified endpoint """
+    def wrapper(*args, **kwargs):
+        response.headers['Access-Control-Allow-Origin'] = '*'  # * in case you want to be accessed via any website
+        return func(*args, **kwargs)
 
-    response.headers['Access-Control-Allow-Origin'] = _allow_origin
-    response.headers['Access-Control-Allow-Methods'] = _allow_methods
-    response.headers['Access-Control-Allow-Headers'] = _allow_headers
+    return wrapper
 
-@route('/', method = 'OPTIONS')
-@route('/<path:path>', method = 'OPTIONS')
-def options_handler(path = None):
-    return
 
 
 @route('/users/<id>')
@@ -162,6 +155,7 @@ def remove(game_id):
 
 
 @route('/games/all')
+@allow_cors
 def getAll():
     try:
         with connection.cursor() as cursor:

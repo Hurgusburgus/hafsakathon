@@ -19,8 +19,6 @@ export function loadGames() {
   return function(dispatch) {
     dispatch(beginAjaxCall());
     return axios.get(`http://localhost:7000/games/all`).then(games => {
-      console.log('sup a')
-      console.log(games)
     // return GameApi.getAllGames().then(games => {
       dispatch(loadGamesSuccess(games));
     }).catch(error => {
