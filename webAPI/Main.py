@@ -1,13 +1,16 @@
-from bottle import run, route, get, post, delete, put
+from bottle import run, route, get, post, delete, put, request, template, response
 import bottle
 import os
 import pymysql
 from pymysql.connections import Connection
+import json
+from requests import request
+import request
 
 
 bottle.TEMPLATE_PATH.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-connection = pymysql.connect(host='localhost',
+connection = pymysql.connect(host='db4free.net',
                              user='recess',
                              password='recess123',
                              db='recess',
@@ -26,20 +29,30 @@ def get(id):
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@post('/users')
+@post('/index')
 def add():
     try:
         with connection.cursor() as cursor:
-            id = request.json.get("id")
-            # ADD ALL THE FIELDS WE NEED TO GET FOR EACH USER
+            id = request.forms.get("id")
+            username = request.forms.get("username")
+            firstname = request.forms.get("firstname") if request.forms.get("firstname") else None
+            lastname = request.forms.get("lastname") if request.forms.get("lastname") else None
+            birth = request.forms.get("birth")
+            sex = request.forms.get("sex")
+            city = request.forms.get("city")
+            phone = request.forms.get("phone") if request.forms.get("phone") else None
+            email = request.forms.get("email")
+            pass_ = request.forms.get("pass")
+            description = request.forms.get("description") if request.forms.get("description") else None
+            reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
 
-            # query = "INSERT into users (id) values ('{}', '{}')".format(
-            #     id)
+            query = "INSERT into users values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+                id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
             cursor.execute(query)
             connection.commit()
-            student_query = "SELECT * FROM users where id = '{}'".format(
+            user_query = "SELECT * FROM users where id = '{}'".format(
                 id)
-            cursor.execute(student_query)
+            cursor.execute(user_query)
             response.status = 201
             return json.dumps(cursor.fetchone())
     except:
@@ -85,11 +98,12 @@ def remove(id):
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@get('/games/<game_id>')
+@get('/games/<game_id:int>')
 def get(game_id):
     try:
         with connection.cursor() as cursor:
-            query = "SELECT * FROM users WHERE game_id = {}".format(
+            # add tables
+            query = "SELECT * FROM games WHERE game_id = {}".format(
                 game_id)
             cursor.execute(query)
             return json.dumps(cursor.fetchall())
@@ -101,12 +115,21 @@ def get(game_id):
 def addgame():
     try:
         with connection.cursor() as cursor:
-            query = "INSERT into games (game_id) values ('{}')".format(
-                game_id)
-                # ADD ALL THE GAME COLUMNS 
+            game_id = request.forms.get("game_id")
+            game_type = request.forms.get("game_type")
+            game_name = request.forms.get("game_name")
+            game_day = request.forms.get("game_day")
+            start_time = request.forms.get("start_time")
+            location = request.forms.get("location")
+            min_players = request.forms.get("min_players")
+            max_players = request.forms.get("max_players")
+            num_teams = request.forms.get("num_teams")
+            query = "INSERT into games (game_id) values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+                game_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
             cursor.execute(query)
             connection.commit()
-            games_query = "SELECT * FROM games"
+            games_query = "SELECT * FROM games where id = '{}'".format(
+                game_id)
             cursor.execute(games_query)
             return json.dumps(cursor.fetchall())
     except:
@@ -136,5 +159,5 @@ def getAll():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-if __id__ == '__main__':
+if __name__ == '__main__':
     run(host='localhost', port=7000, debug=True)

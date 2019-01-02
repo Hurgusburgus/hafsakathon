@@ -1,18 +1,24 @@
-import App from './modules/App';
-import React from 'react'; //eslint-disable-line
+/*eslint-disable import/default */
+import 'babel-polyfill';
+import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
-import store, { history } from './redux/store';
-import './css/style.css';
+import configureStore from './store/configureStore';
+import {Provider} from 'react-redux';
+import { Router, browserHistory } from 'react-router';
+import routes from './routes';
+import {loadGames} from './actions/gameActions';
+import {loadAuthors} from './actions/authorActions';
+import './styles/styles.css'; //Webpack can import CSS files too!
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/toastr/build/toastr.min.css';
 
-const target = document.querySelector('#root');
+const store = configureStore();
+store.dispatch(loadGames());
+store.dispatch(loadAuthors());
 
 render(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <App />
-    </ConnectedRouter>
+    <Router history={browserHistory} routes={routes} />
   </Provider>,
-  target
+  document.getElementById('app')
 );
