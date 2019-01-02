@@ -63,7 +63,3 @@ def get_report(analytics=initialize_analyticsreporting(), days=7, metrics=['ga:s
             }]
             }
                     ).execute()
-
-
-
-
