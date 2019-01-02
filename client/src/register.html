@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <form action="/signup" method="post">
+        <h1>Ready to play? Signup Here:</h1>
+        <h4>Fields with a star * are mandatory. </h4> 
+        <label for="username"><b> * Username </b></label>
+        <input name="username"/>
+        <br/>
+        <label for="firstname"><b> First Name </b></label>
+        <input name="firstname"/>
+        <br/>
+        <label for="last name"><b> Last Name </b></label>
+        <input name="lastname"/>
+        <br/>
+        <label for="birth"><b> * Birthday </b></label>
+        <input name="birth" type="date"/>
+        <br/>
+        <label for="sex"><b> Sex (M/F/N) </b></label>
+        <select name="sex">
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="N" selected>Non-binary // Prefer to not answer</option>
+        </select>
+        <br/>
+        <label for="city"><b> * City </b></label>
+        <select name="city">
+            <option value="TelAviv" selected>Tel Aviv</option>
+            <option value="Jerusalem">Jerusalem</option>
+            <option value="Haifa">Haifa</option>
+        </select>
+        <br/>
+        <label for="phone"><b> Phone Number </b></label>
+        <input name="phone"/>
+        <br/>
+        <label for="email"><b> * Email </b></label>
+        <input name="email"/>
+        <br/>
+        <label for="pass"><b> * Password </b></label>
+        <input name="pass" type="password"/>
+        <br/>
+        <label for="description"><b> Description </b></label>
+        <input name="description" class="description_input"/>
+        <br/>
+        <input type="submit" value="Signup" formaction="/index" />
+    </form>
+    <script>
+    </script>
+</body>
+
+<script>
+
+</script>
+</body>
+
+</html>
