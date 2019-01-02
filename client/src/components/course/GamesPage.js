@@ -41,7 +41,6 @@ GamesPage.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-  console.log('sup b')
   return {
     games: state.games
   };
