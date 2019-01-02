@@ -137,21 +137,25 @@ def add_game():
             min_players = request.forms.get("min_players") if request.forms.get("min_players") else None
             max_players = request.forms.get("max_players") if request.forms.get("max_players") else None
             num_teams = request.forms.get("num_teams")
+
             query = """INSERT into games (game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams) 
-                    values , '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
+                    values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
                 format(game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
+
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             cur.execute(query)
+
             con.commit()
+
             #games_query = "SELECT * FROM games where id = {}".format(game_id)
             #cur.execute(games_query)
-            response.status = 201
-            output = [dict(row) for row in cur.fetchall()]
-            cur.close()
-            return json.dumps(str(output))
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+            #response.status = 201
+            #output = [dict(row) for row in cur.fetchall()]
+            #cur.close()
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
