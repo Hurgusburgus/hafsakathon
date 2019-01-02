@@ -235,7 +235,7 @@ def get_all_games():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@get('/search/<game_type>/<date_ddmmyyyy>/<day_of_week>/<hours>')
+@route('/search/<game_type>/<date>/<day_of_week>/<hours>')
 def find_games(game_type, date, day_of_week, hours):
     """
     For each of the search parameters, pass a value of 'all' if
@@ -253,7 +253,7 @@ def find_games(game_type, date, day_of_week, hours):
     try:
         with connection.cursor() as cursor:
             sql = 'SELECT * FROM games WHERE 1=1 '
-            if game_type != 'all'
+            if game_type != 'all':
                 game_type = '(' + str(game_type.split('--'))[1:-1] + ')'
                 sql += f'AND game_type in {game_type} '
             if date != 'all':
