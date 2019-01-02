@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 
 <body>
@@ -30,9 +31,10 @@
         <br/>
         <label for="city"><b> * City </b></label>
         <select name="city">
-            <option value="TelAviv" selected>Tel Aviv</option>
-            <option value="Jerusalem">Jerusalem</option>
-            <option value="Haifa">Haifa</option>
+            <option value="telaviv" selected>Tel Aviv</option>
+            <option value="jerusalem">Jerusalem</option>
+            <option value="haifa">Haifa</option>
+            <option value="netanya">Netanya</option>
         </select>
         <br/>
         <label for="phone"><b> Phone Number </b></label>
@@ -45,7 +47,7 @@
         <input name="pass" type="password"/>
         <br/>
         <label for="description"><b> Description </b></label>
-        <input name="description" class="description_input"/>
+        <textarea name="description" class="description_input" rows="4" cols="50"></textarea>
         <br/>
         <input type="submit" value="Signup" formaction="/index" />
     </form>
