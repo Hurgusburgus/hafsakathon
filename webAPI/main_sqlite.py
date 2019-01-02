@@ -227,15 +227,15 @@ def get_all_games():
 @route('/locations')
 @allow_cors
 def get_locations():
-    return ['Tel-Aviv','Jerusalem', 'Netanya', 'Jaffa']
+    return json.dumps(['Tel-Aviv','Jerusalem', 'Netanya', 'Jaffa'])
 
 
 @route('/game_types')
 @allow_cors
 def get_locations():
-    return ["basketball", "dodgeball", "frisbee", "hide_and_seek", "hockey",
+    return json.dumps(["basketball", "dodgeball", "frisbee", "gridiron", "hide_and_seek", "hockey",
             "running", "soccer", "table_tennis", "tennis", "volleyball",
-            "other"]
+            "other"])
 
 
 

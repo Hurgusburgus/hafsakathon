@@ -74,7 +74,8 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
 
 GameForm.propTypes = {
   game: React.PropTypes.object.isRequired,
-  allAuthors: React.PropTypes.array,
+  locations: React.PropTypes.array,
+  game_types: React.PropTypes.array,
   onSave: React.PropTypes.func.isRequired,
   onChange: React.PropTypes.func.isRequired,
   saving: React.PropTypes.bool,

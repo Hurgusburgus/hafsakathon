@@ -1,11 +1,11 @@
 import {combineReducers} from 'redux';
 import games from './courseReducer';
-import authors from './authorReducer';
+import filters from './filterReducer'
 import ajaxCallsInProgress from './ajaxStatusReducer';
 
 const rootReducer = combineReducers({
   games,
-  authors,
+  filters,
   ajaxCallsInProgress
 });
 

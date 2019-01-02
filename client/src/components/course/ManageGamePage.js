@@ -9,7 +9,7 @@ import toastr from 'toastr';
 export class ManageGamePage extends React.Component {
   constructor(props, context) {
     super(props, context);
-
+    console.log(props)
     this.state = {
       game: Object.assign({}, props.game),
       errors: {},
@@ -73,7 +73,8 @@ export class ManageGamePage extends React.Component {
   render() {
     return (
       <GameForm
-        allAuthors={this.props.authors}
+        locations={this.props.locations}
+        game_types={this.props.game_types}
         onChange={this.updateGameState}
         onSave={this.saveGame}
         game={this.state.game}
@@ -86,7 +87,8 @@ export class ManageGamePage extends React.Component {
 
 ManageGamePage.propTypes = {
   game: PropTypes.object.isRequired,
-  authors: PropTypes.array.isRequired,
+  locations: PropTypes.array.isRequired,
+  game_types: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired
 };
 
@@ -102,17 +104,22 @@ function getGameById(games, id) {
 }
 
 function mapStateToProps(state, ownProps) {
+  console.log("state: ")
+  console.log(state)
+  console.log("ownProps: ")
+  console.log(ownProps)
   const gameId = ownProps.params.id;
 
   let game = {id: '', watchHref: '', title: '', authorId: '', length: '', category: ''};
 
   if (gameId && state.games.length > 0) {
-    game = getCourseById(state.games, courseId);
+    game = getGameById(state.games, gameId);
   }
 
   return {
     game: game,
-    authors: authorsFormattedForDropdown(state.authors)
+    locations: state.locations,
+    game_types: state.game_types
   };
 }
 
