@@ -2,10 +2,8 @@ from bottle import run, route, get, post, delete, put, request, template, respon
 import bottle
 import os
 import pymysql
-from pymysql.connections import Connection
 import json
 from requests import request
-import request
 
 
 bottle.TEMPLATE_PATH.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -18,13 +16,13 @@ connection = pymysql.connect(host='db4free.net',
                              cursorclass=pymysql.cursors.DictCursor)
 
 
-@get('/users/<id>')
+@route('/users/<id>')
 def get(id):
     try:
         with connection.cursor() as cursor:
             query = "SELECT * FROM users WHERE id = {}".format(id)
             cursor.execute(query)
-            return json.dumps(cursor.fetchone())
+            return json.dumps(str(cursor.fetchone()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
@@ -54,7 +52,7 @@ def add():
                 id)
             cursor.execute(user_query)
             response.status = 201
-            return json.dumps(cursor.fetchone())
+            return json.dumps(str(cursor.fetchone()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
@@ -82,7 +80,7 @@ def remove(id):
             sql = ('DELETE FROM users WHERE id = {}'.format(id))
             cursor.execute(sql)
             connection.commit()
-            return json.dumps(cursor.fetchall())
+            return json.dumps(str(cursor.fetchall()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
@@ -98,15 +96,14 @@ def remove(id):
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@get('/games/<game_id:int>')
+@route('/games/<game_id>')
 def get(game_id):
     try:
         with connection.cursor() as cursor:
             # add tables
-            query = "SELECT * FROM games WHERE game_id = {}".format(
-                game_id)
+            query = "SELECT * FROM games WHERE game_id = {}".format(game_id)
             cursor.execute(query)
-            return json.dumps(cursor.fetchall())
+            return json.dumps(str(cursor.fetchall()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
@@ -131,7 +128,7 @@ def addgame():
             games_query = "SELECT * FROM games where id = {}".format(
                 game_id)
             cursor.execute(games_query)
-            return json.dumps(cursor.fetchall())
+            return json.dumps(str(cursor.fetchall()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
@@ -143,18 +140,18 @@ def remove(game_id):
             sql = ('DELETE FROM games WHERE game_id = {}'.format(game_id))
             cursor.execute(sql)
             connection.commit()
-            return json.dumps(cursor.fetchall())
+            return json.dumps(str(cursor.fetchall()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@get('/games/all')
+@route('/games/all')
 def getAll():
     try:
         with connection.cursor() as cursor:
             query = "SELECT * FROM games"
             cursor.execute(query)
-            return json.dumps(cursor.fetchall())
+            return json.dumps(str(cursor.fetchall()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
