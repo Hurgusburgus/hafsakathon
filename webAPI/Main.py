@@ -167,4 +167,4 @@ def getAll():
 
 
 if __name__ == '__main__':
-    run(host='localhost', port=7000, debug=True)
+    run(host='localhost', port=8000, debug=True)
