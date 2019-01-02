@@ -1,10 +1,11 @@
-from bottle import run, route, get, post, delete, put
+from bottle import run, route, get, post, delete, put, request, template, response
 import bottle
 import os
 import pymysql
 from pymysql.connections import Connection
 import json
 from requests import request
+import request
 
 
 bottle.TEMPLATE_PATH.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -52,7 +53,7 @@ def add():
             user_query = "SELECT * FROM users where id = '{}'".format(
                 id)
             cursor.execute(user_query)
-            # response.status = 201
+            response.status = 201
             return json.dumps(cursor.fetchone())
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
@@ -97,12 +98,12 @@ def remove(id):
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@get('/games/<game_id>')
+@get('/games/<game_id:int>')
 def get(game_id):
     try:
         with connection.cursor() as cursor:
             # add tables
-            query = "SELECT * FROM users WHERE game_id = {}".format(
+            query = "SELECT * FROM games WHERE game_id = {}".format(
                 game_id)
             cursor.execute(query)
             return json.dumps(cursor.fetchall())
@@ -114,13 +115,21 @@ def get(game_id):
 def addgame():
     try:
         with connection.cursor() as cursor:
-            game_id = request.json.get("game_id")
-            query = "INSERT into games (game_id) values ('{}')".format(
-                game_id)
-                # ADD ALL THE GAME COLUMNS 
+            game_id = request.forms.get("game_id")
+            game_type = request.forms.get("game_type")
+            game_name = request.forms.get("game_name")
+            game_day = request.forms.get("game_day")
+            start_time = request.forms.get("start_time")
+            location = request.forms.get("location")
+            min_players = request.forms.get("min_players")
+            max_players = request.forms.get("max_players")
+            num_teams = request.forms.get("num_teams")
+            query = "INSERT into games (game_id) values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+                game_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
             cursor.execute(query)
             connection.commit()
-            games_query = "SELECT * FROM games"
+            games_query = "SELECT * FROM games where id = '{}'".format(
+                game_id)
             cursor.execute(games_query)
             return json.dumps(cursor.fetchall())
     except:
