@@ -7,7 +7,7 @@ from pymysql.connections import Connection
 
 bottle.TEMPLATE_PATH.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-connection = pymysql.connect(host='localhost',
+connection = pymysql.connect(host='db4free.net',
                              user='recess',
                              password='recess123',
                              db='recess',
