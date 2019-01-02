@@ -156,8 +156,8 @@ def add_game():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@route('/search/<game_type>/<date>/<day_of_week>/<hours>')
-def find_games(game_type, date, day_of_week, hours):
+@route('/search/<game_type>/<date>/<day_of_week>/<hours>/<location>')
+def find_games(game_type, date, day_of_week, hours, location):
     """
     For each of the search parameters, pass a value of 'all' if
     it wasn't defined by the user.
@@ -170,6 +170,8 @@ def find_games(game_type, date, day_of_week, hours):
     day_of_week: string with digits of days of week specified by the user (0-6 where 0 is sunday e.g. '014')
 
     hours: string with four digits for start and finish hour (e.g. '0913')
+
+    location: the values of location in games table, separated with two dashes --
     """
     try:
         with sqlite3.connect('recess.db')as con:
@@ -189,11 +191,15 @@ def find_games(game_type, date, day_of_week, hours):
                 start = hours[:2]
                 finish = hours[2:]
                 sql += f"AND start_time between {start} AND {finish} "
+            if location != 'all':
+                location = '(' + str(location.split('--'))[1:-1] + ')'
+                sql += f'AND location in {location} '
             cur.execute(sql)
-            return json.dumps(str(cur.fetchall()))
+            output = [dict(row) for row in cur.fetchall()]
+            return json.dumps(str(output))
 
     except Exception:
-        raise
+        #raise
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
     finally:
