@@ -86,7 +86,22 @@ def add():
 def remove(id):
     try:
         with connection.cursor() as cursor:
+            sql = ('DELETE FROM games_users WHERE user_id = {}'.format(id))
+            cursor.execute(sql)
             sql = ('DELETE FROM users WHERE id = {}'.format(id))
+            cursor.execute(sql)
+            connection.commit()
+            return json.dumps(str(cursor.fetchall()))
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+@delete('/games_users/<user_id:int>/<game_id:int>')
+def remove_from_game(user_id, game_id):
+    try:
+        with connection.cursor() as cursor:
+            sql = ('DELETE FROM games_users WHERE user_id = {} AND game_id = {}'
+                   .format(user_id, game_id))
             cursor.execute(sql)
             connection.commit()
             return json.dumps(str(cursor.fetchall()))
