@@ -32,17 +32,6 @@ def options_handler(path = None):
     return
 
 
-@app.hook('after_request')
-def enable_cors():
-    """
-    You need to add some headers to each request.
-    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
-    """
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-
-
 @route('/users/<id>')
 def get(id):
     try:
@@ -104,7 +93,22 @@ def add():
 def remove(id):
     try:
         with connection.cursor() as cursor:
+            sql = ('DELETE FROM games_users WHERE user_id = {}'.format(id))
+            cursor.execute(sql)
             sql = ('DELETE FROM users WHERE id = {}'.format(id))
+            cursor.execute(sql)
+            connection.commit()
+            return json.dumps(str(cursor.fetchall()))
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+@delete('/games_users/<user_id:int>/<game_id:int>')
+def remove_from_game(user_id, game_id):
+    try:
+        with connection.cursor() as cursor:
+            sql = ('DELETE FROM games_users WHERE user_id = {} AND game_id = {}'
+                   .format(user_id, game_id))
             cursor.execute(sql)
             connection.commit()
             return json.dumps(str(cursor.fetchall()))
