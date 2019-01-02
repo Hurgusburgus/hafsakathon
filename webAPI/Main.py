@@ -97,17 +97,16 @@ def remove(id):
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@get('/games/<game_id>')
-def get(game_id):
-    try:
-        with connection.cursor() as cursor:
-            # add tables
-            query = "SELECT * FROM users WHERE game_id = {}".format(
-                game_id)
-            cursor.execute(query)
-            return json.dumps(cursor.fetchall())
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+# @get('/games/<game_id:int>')
+# def get(game_id):
+#     try:
+#         with connection.cursor() as cursor:
+#             # add tables
+#             query = "SELECT * FROM users WHERE game_id = {}".format(game_id)
+#             cursor.execute(query)
+#             return json.dumps(cursor.fetchall())
+#     except:
+#         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @post('/games')
