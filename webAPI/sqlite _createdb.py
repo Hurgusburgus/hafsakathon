@@ -80,6 +80,44 @@ with sqlite3.connect('recess.db')as con:
     con.commit()
     cur.close()
 
+
+
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""INSERT INTO users (
+    username,
+    firstname,
+    lastname,
+    birth,
+    sex,
+    city,
+    phone,
+    email,
+    pass,
+    description,
+    reg_date)
+
+    VALUES (
+    'smadar',
+    'smadar',
+    'danon',
+    05/05/1994,
+    'female',
+    'tel aviv',
+    05555555,
+    'smadar@gmail.com',
+    123456,
+    'hello',
+    02/01/2019
+    );
+    """)
+
+
+    con.commit()
+    cur.close()
+
+
 with sqlite3.connect('recess.db')as con:
     cur = con.cursor()
     cur.execute("""SELECT* FROM users""")
@@ -90,33 +128,78 @@ with sqlite3.connect('recess.db')as con:
     cur.close()
 
 
-# with sqlite3.connect('recess.db')as con:
-#     cur = con.cursor()
-#     # crate table
-#     cur.execute("""INSERT INTO users (
-#     username,
-#     firstname,
-#     lastname,
-#     birth,
-#     sex,
-#     city,
-#     phone,
-#     email,
-#     pass,
-#     description,
-#     reg_date)
-#
-#     VALUES (
-#     'me',
-#     'my',
-#     'name',
-#     05/03/1991,
-#     'female',
-#     'meitar',
-#     0544959583,
-#     'me@gmail.com',
-#     123456,
-#     'hello',
-#     02/01/2019
-#     );
-#     """)
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""INSERT INTO games (
+    game_type,
+    game_name,
+    game_day,
+    start_time,
+    location,
+    max_players)
+
+    VALUES (
+    'volleyball',
+    'the good guys',
+    05/01/2019,
+    17,
+    'jerusalem',
+    6
+    
+    );
+    """)
+
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""INSERT INTO games (
+    game_type,
+    game_name,
+    game_day,
+    start_time,
+    location,
+    max_players)
+
+    VALUES (
+    'soccer',
+    'winners',
+    05/01/2019,
+    18,
+    'tel aviv',
+    6
+
+    );
+    """)
+
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""INSERT INTO games (
+    game_type,
+    game_name,
+    game_day,
+    start_time,
+    location,
+    max_players)
+
+    VALUES (
+    'table tennis',
+    'kids',
+    04/01/2019,
+    18,
+    'jerusalem',
+    15
+
+    );
+    """)
+
+
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    cur.execute("""SELECT* FROM games""")
+    rows = cur.fetchall()
+    #     print(rows)
+    print(rows)
+
+    cur.close()
