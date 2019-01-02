@@ -20,6 +20,8 @@
   "author": "Cory House",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^3.8.1",
+    "axios": "^0.18.0",
     "babel-polyfill": "6.8.0",
     "bootstrap": "3.3.6",
     "jquery": "2.2.3",

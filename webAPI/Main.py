@@ -1,10 +1,9 @@
-from bottle import run, route, get, post, delete, put, request, template, response
+from bottle import run, route, get, post, delete, put, request, template, response, hook
 import bottle
 import os
 import pymysql
 import json
 from requests import request
-
 
 bottle.TEMPLATE_PATH.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -14,6 +13,23 @@ connection = pymysql.connect(host='db4free.net',
                              db='recess',
                              charset='utf8',
                              cursorclass=pymysql.cursors.DictCursor)
+
+_allow_origin = '*'
+_allow_methods = 'PUT, GET, POST, DELETE, OPTIONS'
+_allow_headers = 'Authorization, Origin, Accept, Content-Type, X-Requested-With'
+
+@hook('after_request')
+def enable_cors():
+    '''Add headers to enable CORS'''
+
+    response.headers['Access-Control-Allow-Origin'] = _allow_origin
+    response.headers['Access-Control-Allow-Methods'] = _allow_methods
+    response.headers['Access-Control-Allow-Headers'] = _allow_headers
+
+@route('/', method = 'OPTIONS')
+@route('/<path:path>', method = 'OPTIONS')
+def options_handler(path = None):
+    return
 
 
 @app.hook('after_request')
@@ -106,7 +122,6 @@ def remove(id):
 #     except:
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
-
 @route('/games/<game_id>')
 def get(game_id):
     try:
@@ -119,18 +134,19 @@ def get(game_id):
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+
 @post('/games')
 def addgame():
     try:
         with connection.cursor() as cursor:
             game_id = request.forms.get("game_id")
-            game_type = request.forms.get("game_type")
-            game_name = request.forms.get("game_name")
+            game_type = request.forms.get("game_type") if request.forms.get("game_type") else None
+            game_name = request.forms.get("game_name") if request.forms.get("game_name") else None
             game_day = request.forms.get("game_day")
             start_time = request.forms.get("start_time")
-            location = request.forms.get("location")
+            location = request.forms.get("location") if request.forms.get("location") else None
             min_players = request.forms.get("min_players")
-            max_players = request.forms.get("max_players")
+            max_players = request.forms.get("max_players") if request.forms.get("max_players") else None
             num_teams = request.forms.get("num_teams")
             query = "INSERT into games (game_id) values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
                 game_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
