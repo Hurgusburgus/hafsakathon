@@ -28,20 +28,30 @@ def get(id):
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-@post('/users')
+@post('/index')
 def add():
     try:
         with connection.cursor() as cursor:
-            id = request.json.get("id")
-            # ADD ALL THE FIELDS WE NEED TO GET FOR EACH USER
+            id = request.forms.get("id")
+            username = request.forms.get("username")
+            firstname = request.forms.get("firstname") if request.forms.get("firstname") else None
+            lastname = request.forms.get("lastname") if request.forms.get("lastname") else None
+            birth = request.forms.get("birth")
+            sex = request.forms.get("sex")
+            city = request.forms.get("city")
+            phone = request.forms.get("phone") if request.forms.get("phone") else None
+            email = request.forms.get("email")
+            pass_ = request.forms.get("pass")
+            description = request.forms.get("description") if request.forms.get("description") else None
+            reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
 
-            query = "INSERT into users (id) values ('{}', '{}')".format(
-                id)
+            query = "INSERT into users values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+                id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
             cursor.execute(query)
             connection.commit()
-            student_query = "SELECT * FROM users where id = '{}'".format(
+            user_query = "SELECT * FROM users where id = '{}'".format(
                 id)
-            cursor.execute(student_query)
+            cursor.execute(user_query)
             # response.status = 201
             return json.dumps(cursor.fetchone())
     except:
@@ -91,6 +101,7 @@ def remove(id):
 def get(game_id):
     try:
         with connection.cursor() as cursor:
+            # add tables
             query = "SELECT * FROM users WHERE game_id = {}".format(
                 game_id)
             cursor.execute(query)
