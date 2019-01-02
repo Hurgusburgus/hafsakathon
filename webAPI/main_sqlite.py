@@ -154,6 +154,56 @@ def add_game():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+@route('/search/<game_type>/<date>/<day_of_week>/<hours>/<location>')
+def find_games(game_type, date, day_of_week, hours, location):
+    """
+    For each of the search parameters, pass a value of 'all' if
+    it wasn't defined by the user.
+    otherwise the parameters are defined as follows:
+
+    game_type: the values of game_type in games table, separated with two dashes --
+
+    date: date string in the format yyyy-mm-dd (e.g. 2019-01-02)
+
+    day_of_week: string with digits of days of week specified by the user (0-6 where 0 is sunday e.g. '014')
+
+    hours: string with four digits for start and finish hour (e.g. '0913')
+
+    location: the values of location in games table, separated with two dashes --
+    """
+    try:
+        with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            sql = 'SELECT * FROM games WHERE 1=1 '
+            if game_type != 'all':
+                game_type = '(' + str(game_type.split('--'))[1:-1] + ')'
+                sql += f'AND game_type in {game_type} '
+            if date != 'all':
+                date = "'" + date + "'"
+                sql += f'AND game_day = date({date}) '
+            elif day_of_week != 'all':  # check day of week only if date wasn't specified
+                day_of_week = '(' + str([d for d in day_of_week])[1:-1] + ')'
+                sql += f"AND strftime('%w', game_day) in {day_of_week} "
+            if hours != 'all':
+                start = hours[:2]
+                finish = hours[2:]
+                sql += f"AND start_time between {start} AND {finish} "
+            if location != 'all':
+                location = '(' + str(location.split('--'))[1:-1] + ')'
+                sql += f'AND location in {location} '
+            cur.execute(sql)
+            output = [dict(row) for row in cur.fetchall()]
+            return json.dumps(str(output))
+
+    except Exception:
+        #raise
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+    finally:
+        cur.close()
+
+
 
 
 @route('/games/all')
