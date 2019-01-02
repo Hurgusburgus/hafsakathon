@@ -7,6 +7,13 @@ from requests import request
 import sqlite3
 
 
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
 
 def allow_cors(func):
     """ this is a decorator which enable CORS for specified endpoint """
@@ -22,10 +29,11 @@ def allow_cors(func):
 def get(id):
     try:
         with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM users WHERE id = {}".format(id)
             cur.execute(query)
-            output = cur.fetchall()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
 
@@ -49,6 +57,7 @@ def add():
             pass_ = request.forms.get("pass")
             description = request.forms.get("description") if request.forms.get("description") else None
             reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "INSERT into users values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
                 id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
@@ -58,7 +67,7 @@ def add():
                 id)
             cur.execute(user_query)
             response.status = 201
-            output = cur.fetchone()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
 
@@ -71,11 +80,12 @@ def add():
 def remove(id):
     try:
         with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             sql = ('DELETE FROM users WHERE id = {}'.format(id))
             cur.execute(sql)
             con.commit()
-            output = cur.fetchone()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
     except:
@@ -86,12 +96,13 @@ def remove(id):
 def remove_from_game(user_id, game_id):
     try:
         with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             sql = ('DELETE FROM games_users WHERE game_id = {}'
                    .format(user_id, game_id))
             cur.execute(sql)
             con.commit()
-            output = cur.fetchone()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
     except:
@@ -102,10 +113,11 @@ def remove_from_game(user_id, game_id):
 def get(game_id):
     try:
         with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM games WHERE game_id = {}".format(game_id)
             cur.execute(query)
-            output = cur.fetchone()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
     except:
@@ -128,6 +140,7 @@ def addgame():
             num_teams = request.forms.get("num_teams")
             query = "INSERT into games (game_id) values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
                 game_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             cur.execute(query)
             con.commit()
@@ -135,7 +148,7 @@ def addgame():
                 game_id)
             cur.execute(games_query)
             response.status = 201
-            output = cur.fetchone()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
     except:
@@ -149,10 +162,11 @@ def addgame():
 def getAll():
     try:
         with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM games"
             cur.execute(sql)
-            output = cur.fetchone()
+            output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
     except:
