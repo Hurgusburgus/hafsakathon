@@ -3,11 +3,13 @@ import bottle
 import os
 import pymysql
 from pymysql.connections import Connection
+import json
+from requests import request
 
 
 bottle.TEMPLATE_PATH.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-connection = pymysql.connect(host='localhost',
+connection = pymysql.connect(host='db4free.net',
                              user='recess',
                              password='recess123',
                              db='recess',
@@ -33,14 +35,14 @@ def add():
             id = request.json.get("id")
             # ADD ALL THE FIELDS WE NEED TO GET FOR EACH USER
 
-            # query = "INSERT into users (id) values ('{}', '{}')".format(
-            #     id)
+            query = "INSERT into users (id) values ('{}', '{}')".format(
+                id)
             cursor.execute(query)
             connection.commit()
             student_query = "SELECT * FROM users where id = '{}'".format(
                 id)
             cursor.execute(student_query)
-            response.status = 201
+            # response.status = 201
             return json.dumps(cursor.fetchone())
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
@@ -136,5 +138,5 @@ def getAll():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-if __id__ == '__main__':
+if __name__ == '__main__':
     run(host='localhost', port=7000, debug=True)
