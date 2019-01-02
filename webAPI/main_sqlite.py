@@ -26,7 +26,7 @@ def allow_cors(func):
 
 
 @route('/users/<id>')
-def get(id):
+def get_user(id):
     try:
         with sqlite3.connect('recess.db')as con:
             con.row_factory = sqlite3.Row
@@ -35,17 +35,16 @@ def get(id):
             cur.execute(query)
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
-            return json.dumps(str(output))
+            return json.dumps(output)
 
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @post('/index')
-def add():
+def add_user_to_users():
     try:
         with sqlite3.connect('recess.db')as con:
-            id = request.forms.get("id")
             username = request.forms.get("username")
             firstname = request.forms.get("firstname") if request.forms.get("firstname") else None
             lastname = request.forms.get("lastname") if request.forms.get("lastname") else None
@@ -59,8 +58,9 @@ def add():
             reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "INSERT into users values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
-                id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
+            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)" \
+                    " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+                 username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
             cur.execute(query)
             con.commit()
             user_query = "SELECT * FROM users where id = {}".format(
@@ -71,13 +71,14 @@ def add():
             cur.close()
             return json.dumps(str(output))
 
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
 @delete('/users/<id:int>')
-def remove(id):
+def remove_user_from_user(id):
     try:
         with sqlite3.connect('recess.db')as con:
             con.row_factory = sqlite3.Row
@@ -87,7 +88,7 @@ def remove(id):
             con.commit()
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
-            return json.dumps(str(output))
+            return json.dumps(output)
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
@@ -110,7 +111,7 @@ def remove_from_game(user_id, game_id):
 
 
 @route('/games/<game_id>')
-def get(game_id):
+def get_game(game_id):
     try:
         with sqlite3.connect('recess.db')as con:
             con.row_factory = sqlite3.Row
@@ -126,7 +127,7 @@ def get(game_id):
 
 
 @post('/games')
-def addgame():
+def add_game():
     try:
         with sqlite3.connect('recess.db')as con:
             game_id = request.forms.get("game_id")
@@ -159,7 +160,7 @@ def addgame():
 
 @route('/games/all')
 @allow_cors
-def getAll():
+def get_all_games():
     try:
         with sqlite3.connect('recess.db')as con:
             con.row_factory = sqlite3.Row

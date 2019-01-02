@@ -2,7 +2,7 @@ import React from 'react';
 import TextInput from '../common/TextInput';
 import SelectInput from '../common/SelectInput';
 
-const CourseForm = ({game, allAuthors, onSave, onChange, saving, errors}) => {
+const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors}) => {
   return (
     <form>
       <h1>Manage Course</h1>
@@ -72,7 +72,7 @@ const CourseForm = ({game, allAuthors, onSave, onChange, saving, errors}) => {
   );
 };
 
-CourseForm.propTypes = {
+GameForm.propTypes = {
   game: React.PropTypes.object.isRequired,
   allAuthors: React.PropTypes.array,
   onSave: React.PropTypes.func.isRequired,
@@ -81,4 +81,4 @@ CourseForm.propTypes = {
   errors: React.PropTypes.object
 };
 
-export default CourseForm;
+export default GameForm;

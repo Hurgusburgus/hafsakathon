@@ -26,7 +26,7 @@ def allow_cors(func):
 
 
 @route('/users/<user_id>')
-def get(user_id):
+def gett(user_id):
     try:
         with connection.cursor() as cursor:
             query = "SELECT * FROM users WHERE id = {}".format(user_id)
@@ -41,29 +41,32 @@ def get(user_id):
 def add_user_to_users():
     try:
         with connection.cursor() as cursor:
-            id = request.forms.get("id")
             username = request.forms.get("username")
-            firstname = request.forms.get("firstname") if request.forms.get("firstname") else None
-            lastname = request.forms.get("lastname") if request.forms.get("lastname") else None
+            firstname = "yoav"#request.forms.get("firstname") if request.forms.get("firstname") else None
+            lastname = "bar zur"#request.forms.get("lastname") if request.forms.get("lastname") else None
             birth = request.forms.get("birth")
             sex = request.forms.get("sex")
             city = request.forms.get("city")
-            phone = request.forms.get("phone") if request.forms.get("phone") else None
+            phone = "43"#request.forms.get("phone") if request.forms.get("phone") else None
             email = request.forms.get("email")
             pass_ = request.forms.get("pass")
-            description = request.forms.get("description") if request.forms.get("description") else None
-            reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
+            description = "fsd"#request.forms.get("description") if request.forms.get("description") else None
+            reg_date = "2018-05-05"#request.forms.get("reg_date") if request.forms.get("reg_date") else None
 
-            query = "INSERT into users values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
-                id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
+            query = """INSERT into users(username, firstname, lastname, birth,
+                    sex, city, phone, email, pass, description, reg_date) 
+                    values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', 
+                            '{}', '{}', '{}')"""\
+                .format(username, firstname, lastname, birth, sex, city, phone,
+                        email, pass_, description, reg_date)
             cursor.execute(query)
             connection.commit()
-            user_query = "SELECT * FROM users where id = {}".format(id)
-            cursor.execute(user_query)
             response.status = 201
             return json.dumps(str(cursor.fetchone()))
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 @post('/games/add_users')
 @allow_cors
@@ -94,7 +97,7 @@ def add_user_to_game():
                                      FROM games
                                      WHERE game_id == {}""".format(game_id)
 
-            cursor.execute(curr_players_query)
+            cursor.execute(max_players_querry)
             max_players = int(cursor.fetchone())
 
             if curr_players > max_players:
@@ -103,6 +106,9 @@ def add_user_to_game():
 
             insertion_query = """INSERT INTO games_users( game_id, user_id)
                                  VALUES({}, {})""".format(game_id,user_id)
+
+            cursor.execute(insertion_query)
+            connection.commit()
 
             return "user {} inserted into game {}".format(user_id,game_id)
     except:
@@ -173,7 +179,7 @@ def remove_from_game(user_id, game_id):
 
 @route('/games/<game_id>')
 @allow_cors
-def get_all_games(game_id):
+def get_game(game_id):
     try:
         with connection.cursor() as cursor:
             # add tables
@@ -233,6 +239,43 @@ def get_all_games():
             return json.dumps(str(cursor.fetchall()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+@get('/search/<game_type>/<date_ddmmyyyy>/<day_of_week>/<hours>')
+def find_games(game_type, date, day_of_week, hours):
+    """
+    For each of the search parameters, pass a value of 'all' if
+    it wasn't defined by the user.
+    otherwise the parameters are defined as follows:
+
+    game_type: the values of game_type in games table, separated with two dashes --
+
+    date: date string in the format yyyy-mm-dd (e.g. 2019-01-02)
+
+    day_of_week: string with digits of days of week specified by the user (0-6 where 0 is sunday e.g. '014')
+
+    hours: string with eight digits for start and finish hour (e.g. '09001345')
+    """
+    try:
+        with connection.cursor() as cursor:
+            sql = 'SELECT * FROM games WHERE 1=1 '
+            if game_type != 'all'
+                game_type = '(' + str(game_type.split('--'))[1:-1] + ')'
+                sql += f'AND game_type in {game_type} '
+            if date != 'all':
+                sql += f'AND game_day = date({date}) '
+            elif day_of_week != 'all':  # check day of week only if date wasn't specified
+                day_of_week = '(' + str([d for d in day_of_week])[1:-1] + ')'
+                sql += f"AND strftime('%w', game_day) in {day_of_week} "
+            if hours != 'all':
+                start = hours[:2] + ':' + hours[2:4]
+                finish = hours[4:6] + ':' + hours[6:]
+                sql += f'AND start_time BETWEEN time({start}) AND time({finish}) '
+            cursor.execute(sql)
+            return json.dumps(str(cursor.fetchall()))
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
 
 
 if __name__ == '__main__':
