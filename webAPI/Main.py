@@ -50,7 +50,7 @@ def add():
                 id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
             cursor.execute(query)
             connection.commit()
-            user_query = "SELECT * FROM users where id = '{}'".format(
+            user_query = "SELECT * FROM users where id = {}".format(
                 id)
             cursor.execute(user_query)
             response.status = 201
@@ -128,7 +128,7 @@ def addgame():
                 game_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
             cursor.execute(query)
             connection.commit()
-            games_query = "SELECT * FROM games where id = '{}'".format(
+            games_query = "SELECT * FROM games where id = {}".format(
                 game_id)
             cursor.execute(games_query)
             return json.dumps(cursor.fetchall())
