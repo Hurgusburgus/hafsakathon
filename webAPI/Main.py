@@ -1,4 +1,4 @@
-from bottle import run, route, get, post, delete, put, request, template, response, hook
+from bottle import run, route, get, post, delete, put, request, template, response
 import bottle
 import os
 import pymysql
@@ -25,11 +25,11 @@ def allow_cors(func):
 
 
 
-@route('/users/<id>')
-def get(id):
+@route('/users/<user_id>')
+def get(user_id):
     try:
         with connection.cursor() as cursor:
-            query = "SELECT * FROM users WHERE id = {}".format(id)
+            query = "SELECT * FROM users WHERE id = {}".format(user_id)
             cursor.execute(query)
             return json.dumps(str(cursor.fetchone()))
     except:
@@ -37,7 +37,8 @@ def get(id):
 
 
 @post('/index')
-def add():
+@allow_cors
+def add_user_to_users():
     try:
         with connection.cursor() as cursor:
             id = request.forms.get("id")
@@ -57,13 +58,62 @@ def add():
                 id, username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
             cursor.execute(query)
             connection.commit()
-            user_query = "SELECT * FROM users where id = {}".format(
-                id)
+            user_query = "SELECT * FROM users where id = {}".format(id)
             cursor.execute(user_query)
             response.status = 201
             return json.dumps(str(cursor.fetchone()))
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+@post('/games/add_users')
+@allow_cors
+def add_user_to_game():
+    try:
+        with connection.cursor() as cursor:
+            user_id = request.forms.get("user_id")
+            game_id = request.forms.get("game_id")
+
+            is_in_game_querry = """SELECT *
+                            FROM users
+                            WHERE id == {}""".format(user_id)
+
+            cursor.execute(is_in_game_querry)
+            is_in_game = str(cursor.fetchone())
+            if is_in_game:
+                return "User Already in Game!"
+
+
+            curr_players_query = """ SELECT  COUNT(*) 
+                             FROM  games_useres
+                             WHERE game_id == {}""".format(game_id)
+
+            cursor.execute(curr_players_query)
+            curr_players = int(cursor.fetchone())
+
+            max_players_querry = """ SELECT max_players
+                                     FROM games
+                                     WHERE game_id == {}""".format(game_id)
+
+            cursor.execute(curr_players_query)
+            max_players = int(cursor.fetchone())
+
+            if curr_players > max_players:
+                return "Cant Add user, game reached "\
+                        "maximum users limit for the game"
+
+            insertion_query = """INSERT INTO games_users( game_id, user_id)
+                                 VALUES({}, {})""".format(game_id,user_id)
+
+            return "user {} inserted into game {}".format(user_id,game_id)
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+
+
+
+
+
 
 # MVP2
 # @put('/users/<id>')
@@ -83,7 +133,8 @@ def add():
 
 
 @delete('/users/<id:int>')
-def remove(id):
+@allow_cors
+def remove_user_from_users(id):
     try:
         with connection.cursor() as cursor:
             sql = ('DELETE FROM games_users WHERE user_id = {}'.format(id))
@@ -97,6 +148,7 @@ def remove(id):
 
 
 @delete('/games_users/<user_id:int>/<game_id:int>')
+@allow_cors
 def remove_from_game(user_id, game_id):
     try:
         with connection.cursor() as cursor:
@@ -120,7 +172,8 @@ def remove_from_game(user_id, game_id):
 #         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 @route('/games/<game_id>')
-def get(game_id):
+@allow_cors
+def get_all_games(game_id):
     try:
         with connection.cursor() as cursor:
             # add tables
@@ -131,8 +184,8 @@ def get(game_id):
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
-
 @post('/games')
+@allow_cors
 def addgame():
     try:
         with connection.cursor() as cursor:
@@ -158,7 +211,8 @@ def addgame():
 
 
 @delete('/games/<game_id:int>')
-def remove(game_id):
+@allow_cors
+def remove_game(game_id):
     try:
         with connection.cursor() as cursor:
             sql = ('DELETE FROM games WHERE game_id = {}'.format(game_id))
@@ -171,7 +225,7 @@ def remove(game_id):
 
 @route('/games/all')
 @allow_cors
-def getAll():
+def get_all_games():
     try:
         with connection.cursor() as cursor:
             query = "SELECT * FROM games"
