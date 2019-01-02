@@ -235,5 +235,42 @@ def get_all_games():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+@get('/search/<game_type>/<date_ddmmyyyy>/<day_of_week>/<hours>')
+def find_games(game_type, date, day_of_week, hours):
+    """
+    For each of the search parameters, pass a value of 'all' if
+    it wasn't defined by the user.
+    otherwise the parameters are defined as follows:
+
+    game_type: the values of game_type in games table, separated with two dashes --
+
+    date: date string in the format yyyy-mm-dd (e.g. 2019-01-02)
+
+    day_of_week: string with digits of days of week specified by the user (0-6 where 0 is sunday e.g. '014')
+
+    hours: string with eight digits for start and finish hour (e.g. '09001345')
+    """
+    try:
+        with connection.cursor() as cursor:
+            sql = 'SELECT * FROM games WHERE 1=1 '
+            if game_type != 'all'
+                game_type = '(' + str(game_type.split('--'))[1:-1] + ')'
+                sql += f'AND game_type in {game_type} '
+            if date != 'all':
+                sql += f'AND game_day = date({date}) '
+            elif day_of_week != 'all':  # check day of week only if date wasn't specified
+                day_of_week = '(' + str([d for d in day_of_week])[1:-1] + ')'
+                sql += f"AND strftime('%w', game_day) in {day_of_week} "
+            if hours != 'all':
+                start = hours[:2] + ':' + hours[2:4]
+                finish = hours[4:6] + ':' + hours[6:]
+                sql += f'AND start_time BETWEEN time({start}) AND time({finish}) '
+            cursor.execute(sql)
+            return json.dumps(str(cursor.fetchall()))
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+
 if __name__ == '__main__':
     run(host='localhost', port=8000, debug=True)
