@@ -19,6 +19,13 @@ class GamesPage extends React.Component {
     browserHistory.push('/course');
   }
 
+  joinGame(game_id) {
+    return function() {
+      debugger;
+      browserHistory.push('/game/' + game_id)
+    }
+  }
+
   render() {
     const {games} = this.props;
 
@@ -29,7 +36,7 @@ class GamesPage extends React.Component {
                value="Add Game"
                className="btn btn-primary"
                onClick={this.redirectToAddCoursePage}/>
-        <GameList games={games}/>
+        <GameList games={games} joinGameFunc={this.joinGame}/>
       </div>
     );
   }
