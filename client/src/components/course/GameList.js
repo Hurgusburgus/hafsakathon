@@ -12,6 +12,7 @@ const GameList = ({games}) => {
         <th>Where</th>
         <th>Description</th>
         <th>When</th>
+        <th></th>
       </tr>
       </thead>
       <tbody>

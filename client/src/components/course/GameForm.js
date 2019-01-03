@@ -22,7 +22,7 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
       <label for="date">Date of Game</label>
       <input
         name="date"
-        id="datepicker"
+        id="date"
         type="date"
         label="Date"
         value={game.date}
