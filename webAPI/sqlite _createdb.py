@@ -31,8 +31,8 @@ with sqlite3.connect('recess.db')as con:
     id_game integer PRIMARY KEY AUTOINCREMENT,
     game_type text,
     game_name text,
-    game_day DATE NOT NULL,
-    start_time TIME NOT NULL,
+    game_day DATE not null,
+    start_time text NOT NULL,
     location text,
     min_players integer NOT NULL DEFAULT 2,
     max_players integers,
@@ -117,6 +117,63 @@ with sqlite3.connect('recess.db')as con:
     con.commit()
     cur.close()
 
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""INSERT INTO users (
+    username,
+    firstname,
+    lastname,
+    birth,
+    sex,
+    city,
+    phone,
+    email,
+    pass)
+
+    VALUES (
+    'barb',
+    'barbara',
+    'cohen',
+    date('1994-07-07'),
+    'female',
+    'tel aviv',
+    054466771,
+    'barb@gmail.com',
+    123456
+    );
+    """)
+
+
+    con.commit()
+    cur.close()
+
+
+
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""INSERT INTO games (
+    game_type,
+    game_name,
+    game_day,
+    start_time,
+    location,
+    max_players)
+
+    VALUES (
+    'soccer',
+    'team',
+    date('1994-07-07'),
+    'bla',
+    'jerusalem',
+    5
+    );
+    """)
+    con.commit()
+    cur.close()
+#
+
 
 with sqlite3.connect('recess.db')as con:
     cur = con.cursor()
@@ -146,9 +203,11 @@ with sqlite3.connect('recess.db')as con:
     17,
     'jerusalem',
     6
-    
+
     );
     """)
+    con.commit()
+    cur.close()
 
 with sqlite3.connect('recess.db')as con:
     cur = con.cursor()
@@ -171,6 +230,8 @@ with sqlite3.connect('recess.db')as con:
 
     );
     """)
+    con.commit()
+    cur.close()
 
 with sqlite3.connect('recess.db')as con:
     cur = con.cursor()
@@ -193,6 +254,8 @@ with sqlite3.connect('recess.db')as con:
 
     );
     """)
+    con.commit()
+    cur.close()
 
 
 with sqlite3.connect('recess.db')as con:
