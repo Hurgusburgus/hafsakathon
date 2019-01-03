@@ -66,9 +66,8 @@ def add_user_to_users():
                 if request.forms.get("description") else None
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = """INSERT into users 
-                       (username, firstname, lastname, birth, sex, city, phone,
-                         email,pass_, description, reg_date)
+            query = """INSERT into users (username, firstname, lastname, birth, sex, city, phone,
+                         email,pass, description, reg_date)
                         values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}',
                                 '{}', '{}', '{}')""".\
                 format(username, firstname, lastname, birth, sex, city, phone,
@@ -76,10 +75,12 @@ def add_user_to_users():
             cur.execute(query)
             con.commit()
 
-            response.status = 201
-            output = [dict(row) for row in cur.fetchall()]
+            disp_query = "select * from users where username = '{}'".format(username)
+            cur.execute(disp_query)
+            ret = [row for row in cur.fetchone()]
             cur.close()
-            return json.dumps(str(output))
+            return json.dumps(str(ret))
+
 
     except Exception as e:
         return e
@@ -97,35 +98,57 @@ def add_user_to_game():
             user_id = request.forms.get("user_id")
             game_id = request.forms.get("game_id")
 
-            is_in_game_querry = """SELECT *
+            exist_in_db_user = """SELECT EXISTS (SELECT *
                             FROM users
-                            WHERE id == {}""".format(user_id)
+                            WHERE id = '{}')""".format(user_id)
 
-            cur.execute(is_in_game_querry)
-            is_in_game = str(cur.fetchone())
-            if is_in_game:
+            cur.execute(exist_in_db_user)
+            is_in_users = cur.fetchall()[0]
+            if is_in_users == 0:
+                return "User Doesnt exists!"
+
+
+            exist_in_db_game = """SELECT EXISTS (SELECT *
+                            FROM games
+                            WHERE game_id = '{}')""".format(game_id)
+
+            cur.execute(exist_in_db_game)
+            is_in_games = cur.fetchall()[0]
+            if is_in_games == 0:
+                return "Game Doesnt exists!"
+
+            exist_in_db_game_users = """SELECT EXISTS (SELECT *
+                            FROM users_games
+                            WHERE user_id = {} AND game_id = {})""".\
+                format(user_id, game_id)
+
+            cur.execute(exist_in_db_game_users)
+            is_in_user_games = [item for item in cur.fetchall()]
+
+            if is_in_user_games[0][0] != 0:
                 return "User Already in Game!"
 
 
-            curr_players_query = """ SELECT  COUNT(*) 
-                             FROM  games_useres
-                             WHERE game_id == {}""".format(game_id)
+            curr_players_query = """ SELECT COUNT(game_id) 
+                             FROM  users_games
+                             GROUP BY game_id
+                             HAVING  game_id = {}""".format(game_id)
 
             cur.execute(curr_players_query)
-            curr_players = int(cur.fetchone())
+            curr_players = cur.fetchall()[0][0]
 
             max_players_querry = """ SELECT max_players
                                      FROM games
-                                     WHERE game_id == {}""".format(game_id)
+                                     WHERE game_id = {}""".format(game_id)
 
             cur.execute(max_players_querry)
-            max_players = int(cur.fetchone())
+            max_players = cur.fetchall()[0][0]
 
             if curr_players > max_players:
                 return "Cant Add user, game reached "\
-                        "maximum users limit for the game"
+                        "maximum users limit!"
 
-            insertion_query = """INSERT INTO games_users( game_id, user_id)
+            insertion_query = """INSERT INTO users_games( game_id, user_id)
                                  VALUES({}, {})""".format(game_id,user_id)
 
             cur.execute(insertion_query)
@@ -134,7 +157,6 @@ def add_user_to_game():
             return "user {} inserted into game {}".format(user_id,game_id)
     except Exception as e:
         return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 

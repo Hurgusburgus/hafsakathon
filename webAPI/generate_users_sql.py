@@ -56,7 +56,7 @@ def useres_insert(given_input):
                                 '{email}', '{pass_}','{reg_date}') """
         for row in given_input:
             query = insertion_querry.format(username=row['username'],
-                                            firstname=row['username'],
+                                            firstname=row['firstname'],
                                             lastname=row['lastname'],
                                             birth=row['birth'],
                                             sex=row['sex'],
