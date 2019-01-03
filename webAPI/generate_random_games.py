@@ -23,7 +23,7 @@ def add_random_games(num_games=30):
                 game_type = game_types[randint(0, len(game_types) - 1)]
                 game_name = game_names[randint(0, len(game_names) - 1)]
                 if randint(0, 1) == 0:
-                    game_name = 'user ' + str(user_id) + game_name
+                    game_name = 'user ' + str(creator_id) + game_name
                 day = str(randint(1, 28))
                 month = str(randint(1, 12))
                 year = '2019'
@@ -33,7 +33,7 @@ def add_random_games(num_games=30):
                 min_players = randint(4, 12)
                 max_players = randint(min_players, min_players * 3)
                 num_teams = randint(2, 4)
-                query = """INSERT into games (game_type, game_name, game_day, start_time, 
+                query = """INSERT into games (creator_id, game_type, game_name, game_day, start_time, 
                 location, min_players, max_players, num_teams) 
                 values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
                             format(creator_id, game_type, game_name, game_day, start_time,

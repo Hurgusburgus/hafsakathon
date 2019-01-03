@@ -25,21 +25,25 @@ def create_users_table():
 
 def create_games_table():
 
-    with sqlite3.connect('recess.db')as con:
-        cur = con.cursor()
-        # crate table
-        cur.execute("""CREATE TABLE IF NOT EXISTS games (
-        id_game integer PRIMARY KEY AUTOINCREMENT,
-        game_type text,
-        game_name text,
-        game_day DATE NOT NULL,
-        start_time TIME NOT NULL,
-        location text,
-        min_players integer NOT NULL DEFAULT 2,
-        max_players integers,
-        num_teams integer DEFAULT 0
-        );
-        """)
+with sqlite3.connect('recess.db')as con:
+    cur = con.cursor()
+    # crate table
+    cur.execute("""DROP TABLE IF EXISTS games""")
+    con.commit()
+    cur.execute("""CREATE TABLE IF NOT EXISTS games (
+    id_game integer PRIMARY KEY AUTOINCREMENT,
+    creator_id integer NOT NULL,
+    game_type text,
+    game_name text,
+    game_day DATE NOT NULL,
+    start_time text NOT NULL,
+    location text,
+    min_players integer NOT NULL DEFAULT 2,
+    max_players integers,
+    num_teams integer DEFAULT 0,
+    FOREIGN KEY (creator_id) REFERENCES users(id)
+    );
+    """)
 
         con.commit()
         cur.close()
@@ -218,10 +222,10 @@ def insert_games():
 def create_users_games():
     with sqlite3.connect('recess.db')as con:
         cur = con.cursor()
-        query = """CREATE TABLE IF NOT EXISTS `users_games` 
+        query = """CREATE TABLE IF NOT EXISTS `users_games`
                     (`game_id` int,`user_id` int,
                       FOREIGN KEY (`user_id`) REFERENCES users(`id`),
-                      FOREIGN KEY (`game_id`) REFERENCES games(`game_id`)) 
+                      FOREIGN KEY (`game_id`) REFERENCES games(`game_id`))
                 """
         cur.execute(query)
         con.commit()
