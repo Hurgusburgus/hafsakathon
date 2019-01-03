@@ -34,7 +34,7 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
           name="time"
           type="time"
           label="Start Time"
-          value={game.time}
+          value={game.start_time}
           onChange={onChange}/>
       </div>
       <br/>
