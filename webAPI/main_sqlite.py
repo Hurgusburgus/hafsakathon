@@ -5,6 +5,7 @@ import json
 import sqlite3
 from datetime import datetime
 
+from generate_random_games import add_random_games
 
 
 def dict_factory(cursor, row):
@@ -243,4 +244,5 @@ def get_locations():
 
 
 if __name__ == '__main__':
+    add_random_games(100)
     run(host='localhost', port=8000, debug=True)
