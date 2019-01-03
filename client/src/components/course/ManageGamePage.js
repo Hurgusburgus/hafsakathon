@@ -10,20 +10,21 @@ const game_types = [{value: "basketball", label: "Basketball"},
                    {value: "dodgeball", label: "Dodgeball"}, 
                    {value: "frisbee", label: "Frisbee"}, 
                    {value: "gridiron", label: "Gridiron"}, 
-                   {value: "hide_and_seek", label: "Hide and seek"}, 
+                   {value: "hide_and_seek", label: "Hide and Seek"}, 
                    {value: "hockey", label: "Hockey"},
                    {value: "running", label: "Running"}, 
                    {value: "soccer", label: "Soccer"}, 
-                   {value: "table_tennis", label: "Table tennis"}, 
+                   {value: "table_tennis", label: "Table Tennis"}, 
                    {value: "tennis", label: "Tennis"}, 
                    {value: "volleyball", label: "Volleyball"},
                    {value: "other", label: "Other"}]
 
 const locations = [
                    {value: 'Tel-Aviv', label: 'Tel Aviv'}, 
-                   {value: 'Jaffa', label: 'Jaffa'},
+                   {value: 'Netanya', label: 'Netanya'},
+                   {value: 'Haifa', label: 'Haifa'},
                    {value: 'Jerusalem', label: 'Jerusalem'},
-                   {value: 'Netanya', label: 'Netanya'}
+                   {value: 'Jaffa', label: 'Jaffa'},
                    ]
 
 export class ManageGamePage extends React.Component {

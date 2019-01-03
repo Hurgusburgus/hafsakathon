@@ -11,6 +11,7 @@ const GameListRow = ({game}) => {
       <td>{game.location}</td>
       <td>{game.game_name}</td>
       <td>{game.game_day} {game.start_day}</td>
+      <td> <button type="button" className="btn btn-default">Join Game</button></td>
     </tr>
   );
 };
