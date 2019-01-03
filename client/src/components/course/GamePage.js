@@ -15,6 +15,7 @@ class GamePage extends React.Component {
     };
     this.redirectToGamesPage = this.redirectToGamesPage.bind(this);
     this.getUsers = this.getUsers.bind(this);
+    this.getUsers(props.game.id_game)
 
   }
   componentWillReceiveProps(nextProps) {
