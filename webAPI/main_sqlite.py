@@ -6,6 +6,7 @@ import sqlite3
 from datetime import datetime
 
 from generate_random_games import add_random_games
+from randomly_add_users_to_games import randomly_add_users_to_games
 
 
 def dict_factory(cursor, row):
