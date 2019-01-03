@@ -8,6 +8,7 @@ class HomePage extends React.Component {
         <h1>Recess</h1>
         <p>An app to get off your phone</p>
         <Link to="games" className="btn btn-primary btn-lg">Play</Link>
+        <Link to="register" className="btn btn-primary btn-lg">Register</Link>
       </div>
     );
   }
