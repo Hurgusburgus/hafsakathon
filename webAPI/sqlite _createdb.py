@@ -165,6 +165,18 @@ def main():
     create_games_table()
     create_users_games()
     populate_tables(n_players=200,n_games=200,display_num=5)
+    with sqlite3.connect(DATABASE)as con:
+        cur = con.cursor()
+        cur.execute("""SELECT games.id_game, games.creator_id, users_games.user_id, users.username,
+                    users.firstname, users.lastname, users.birth,
+                    users.sex, users.city, users.phone, users.email, users.description
+                    FROM games
+                    INNER JOIN users_games ON users_games.game_id = games.id_game
+                    INNER JOIN users ON users_games.user_id = users.id
+                    where id_game = {}
+                    """.format(1))
+        for row in cur.fetchall():
+            print(row)
 
 
 if __name__ == "__main__":

@@ -1,12 +1,10 @@
-from bottle import run, route, get, post, delete, put, request, template, response, hook
+from bottle import run, route, get, post, delete, put, request, template, response, hook, static_file
 
 import json
 import sqlite3
 from datetime import datetime
 
 DATABASE = 'recess.db'
-
-
 
 
 def dict_factory(cursor, row):
@@ -323,6 +321,22 @@ def get_all_games():
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+@route('/users/all')
+@allow_cors
+def get_all_users():
+    try:
+        with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            query = "SELECT * FROM users"
+            cur.execute(query)
+            output = [dict(row) for row in cur.fetchall()]
+            cur.close()
+            return json.dumps(output)
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
 @route('/locations')
 @allow_cors
 def get_locations():
@@ -347,6 +361,34 @@ def get_game_types():
                        {"value": "tennis", "label": 'Tennis'},
                        {"value": "volleyball", "label": 'Volleyball'},
                        {"value": "other", "label": 'Other'}])
+
+
+@route('/get_users_for_game/<id_game>')
+@allow_cors
+def get_users_for_game(id_game):
+    try:
+        with sqlite3.connect('recess.db')as con:
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            query = """SELECT games.id_game, games.creator_id, users_games.user_id, users.username,
+                    users.firstname, users.lastname, users.birth,
+                    users.sex, users.city, users.phone, users.email, users.description
+                    FROM games
+                    INNER JOIN users_games ON users_games.game_id = games.id_game
+                    INNER JOIN users ON users_games.user_id = users.id
+                    where id_game = {}
+                    """.format(id_game)
+            cur.execute(query)
+            output = [dict(row) for row in cur.fetchall()]
+            cur.close()
+            return json.dumps(output)
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+@route('/register')
+@allow_cors
+def server_static(filepath="register.html"):
+    return static_file(filepath, root='../client/src/components/register') 
 
 
 if __name__ == '__main__':

@@ -1,23 +1,24 @@
 import React, {PropTypes} from 'react';
 import GameListRow from './GameListRow';
 
-const GameList = ({games}) => {
+const GameList = ({games, joinGameFunc}) => {
   console.log(games)
   return (
     <table className="table">
       <thead>
       <tr>
         <th>Game Type</th>
-        <th>Creator</th>
+        {/* <th>Creator</th> */}
         <th>Location</th>
         <th>Description</th>
-        <th>When</th>
+        <th>Date</th>
+        <th>Start Time</th>
         <th></th>
       </tr>
       </thead>
       <tbody>
       {games.map(game =>
-        <GameListRow key={game.id_game} game={game}/>
+        <GameListRow key={game.id_game} game={game} joinGameFunc={joinGameFunc(game.id_game)}/>
       )};
       </tbody>
     </table>

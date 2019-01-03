@@ -2,7 +2,7 @@ import React from 'react';
 import TextInput from '../common/TextInput';
 import SelectInput from '../common/SelectInput';
 
-const CourseForm = ({game, locations, onSave, onChange, saving}) => {
+const UserForm = ({user, locations, onSave, onChange, saving}) => {
   return (
     <form>
       <h1>Register: </h1>
@@ -10,26 +10,26 @@ const CourseForm = ({game, locations, onSave, onChange, saving}) => {
       <TextInput
         name="username"
         label="Username"
-        value={game.username}
+        value={user.username}
         onChange={onChange}/>
 
       <TextInput
         name="first_name"
         label="First Name"
-        value={game.first_name}
+        value={user.first_name}
         onChange={onChange}/>
 
       <TextInput
         name="last_name"
         label="Last Name"
-        value={game.last_name}
+        value={user.last_name}
         onChange={onChange}/>
 
       <input
         name="birth"
         type="date"
         label="Birthdate"
-        value={game.birth}
+        value={user.birth}
         onChange={onChange}/>
 
       <label for="sex"><b> Sex (M/F/N) </b></label>
@@ -39,17 +39,10 @@ const CourseForm = ({game, locations, onSave, onChange, saving}) => {
           <option value="N" selected>Non-binary // Prefer to not answer</option>
       </select>
         
-      <input
-        name="time"
-        type="time"
-        label="Start Time"
-        value={game.time}
-        onChange={onChange}/>
-
       <SelectInput
         name="location"
         label="Location"
-        value={game.location}
+        value={user.location}
         defaultOption="tag"
         options={locations}
         onChange={onChange}/>
@@ -58,26 +51,26 @@ const CourseForm = ({game, locations, onSave, onChange, saving}) => {
         name="phone"
         type="number"
         label="Phone Number"
-        value={game.phone}
+        value={user.phone}
         onChange={onChange}/>
 
       <TextInput
         name="email"
         label="Email"
-        value={game.email}
+        value={user.email}
         onChange={onChange}/>
 
       <input
         name="pass"
         type="password"
         label="Password"
-        value={game.pass}
+        value={user.pass}
         onChange={onChange}/>
 
       <TextInput
         name="description"
         label="Description"
-        value={game.description}
+        value={user.description}
         onChange={onChange}/>
 
       <input
@@ -90,13 +83,13 @@ const CourseForm = ({game, locations, onSave, onChange, saving}) => {
   );
 };
 
-CourseForm.propTypes = {
-  course: React.PropTypes.object.isRequired,
-  allAuthors: React.PropTypes.array,
+UserForm.propTypes = {
+  user: React.PropTypes.object.isRequired,
+  locations: React.PropTypes.array.isRequired,
   onSave: React.PropTypes.func.isRequired,
   onChange: React.PropTypes.func.isRequired,
   saving: React.PropTypes.bool,
   errors: React.PropTypes.object
 };
 
-export default CourseForm;
+export default UserForm;

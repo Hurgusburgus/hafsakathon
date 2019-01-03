@@ -16,8 +16,8 @@ def randomly_add_users_to_games():
             if game['min_players'] and game['max_players']:
                 num_players_to_add = randint(game['min_players'] - 1,
                                              game['max_players'] - 1)
+                users_added = [game['creator_id']]
                 for player in range(num_players_to_add):
-                    users_added = [game['creator_id']]
                     random_player = users[randint(0, len(users) - 1)]
                     if random_player not in users_added:
                         users_added.append(random_player)
