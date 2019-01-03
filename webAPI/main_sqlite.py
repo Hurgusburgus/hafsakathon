@@ -122,9 +122,8 @@ def add_user_to_game():
             con.commit()
 
             return "user {} inserted into game {}".format(user_id,game_id)
-    except Exception as e:
-        return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
@@ -167,13 +166,16 @@ def remove_from_game(user_id, game_id):
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+
+
 @route('/games/<game_id>')
 def get_game(game_id):
     try:
         with sqlite3.connect('recess.db')as con:
+            print('here')
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "SELECT * FROM games WHERE game_id = {}".format(game_id)
+            query = "SELECT * FROM games WHERE id_game = {}".format(game_id)
             cur.execute(query)
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
@@ -187,8 +189,9 @@ def get_game(game_id):
 def add_game():
     try:
         with sqlite3.connect('recess.db')as con:
-            game_type = request.forms.get("game_type") #if request.forms.get("game_type") else None
-            game_name = request.forms.get("game_name") #if request.forms.get("game_name") else None
+            creator_id = game_type = request.forms.get("creator_id")
+            game_type = request.forms.get("game_type") if request.forms.get("game_type") else None
+            game_name = request.forms.get("game_name") if request.forms.get("game_name") else None
             game_day = request.forms.get("game_day")
             start_time = request.forms.get("start_time")
             location = request.forms.get("location") if request.forms.get("location") else None
@@ -211,9 +214,8 @@ def add_game():
             #response.status = 201
             #output = [dict(row) for row in cur.fetchall()]
             #cur.close()
-    except Exception as e:
-        return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @route('/search/<game_type>/<date>/<day_of_week>/<hours>/<location>')
@@ -297,7 +299,7 @@ def get_locations():
 
 @route('/game_types')
 @allow_cors
-def get_locations():
+def get_game_types():
     return json.dumps([{"value": "basketball", "label": 'Basketball'},
                        {"value": "dodgeball", "label": 'Dodgeball'},
                        {"value": "frisbee", "label": 'Frisbee'},
