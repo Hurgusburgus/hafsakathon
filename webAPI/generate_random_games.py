@@ -1,8 +1,9 @@
 import sqlite3
 
+DATABASE = 'recess.db'
 def add_random_games(num_games=30):
     from random import randint
-    with sqlite3.connect('recess.db')as con:
+    with sqlite3.connect(DATABASE)as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         game_types = ['basketball', 'dodgeball', 'football', 'frisbee', 'hide_and_seek',
@@ -23,7 +24,7 @@ def add_random_games(num_games=30):
                 game_type = game_types[randint(0, len(game_types) - 1)]
                 game_name = game_names[randint(0, len(game_names) - 1)]
                 if randint(0, 1) == 0:
-                    game_name = 'user ' + str(creator_id) + game_name
+                    game_name = 'user' + str(creator_id) + ' ' + game_name
                 day = str(randint(1, 28))
                 month = str(randint(1, 12))
                 year = '2019'
@@ -40,6 +41,13 @@ def add_random_games(num_games=30):
                                    location, min_players, max_players, num_teams)
                 cur.execute(query)
                 con.commit()
+
+def show_games():
+    with sqlite3.connect(DATABASE)as con:
+        cur = con.cursor()
+        cur.execute("select * from games")
+        for row in cur.fetchall():
+            print(row)
 
 
 if __name__ == '__main__':

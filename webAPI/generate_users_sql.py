@@ -1,5 +1,4 @@
 import numpy as np
-import json
 import sqlite3
 
 
@@ -28,7 +27,7 @@ def generate_useres(n):
     for i in range(n):
         curr_user = {}
         curr_user['username'] = np.random.choice(user_names) + \
-                                str(np.random.randint(10))
+                                str(np.random.randint(100))
         curr_user['firstname'] = np.random.choice(firstnames)
         curr_user['lastname'] = np.random.choice(lastnames)
         curr_user['birth'] = np.random.choice(birth_dates)
@@ -69,16 +68,18 @@ def useres_insert(given_input):
 
             cur.execute(query)
             con.commit()
+        cur.close()
 
-        cur.execute("select * from users")
-        for row in cur.fetchall():
-            print(row)
+
+
+def populate_users(n):
+    users = generate_useres(n)
+    useres_insert(users)
 
 
 
 def main():
-    users = generate_useres(5)
-    useres_insert(users)
+    populate_users(5)
 
 if __name__ == "__main__":
     main()
