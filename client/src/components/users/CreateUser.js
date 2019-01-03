@@ -10,7 +10,7 @@ const UserForm = ({user, locations, onSave, onChange, saving}) => {
       <TextInput
         name="username"
         label="Username"
-        value={user.username}
+        value={user.username}s
         onChange={onChange}/>
 
       <TextInput

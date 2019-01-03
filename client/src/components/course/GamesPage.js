@@ -4,11 +4,13 @@ import {bindActionCreators} from 'redux';
 import * as gameActions from '../../actions/gameActions';
 import GameList from './GameList';
 import {browserHistory} from 'react-router';
+import toastr from 'toastr';
 
 class GamesPage extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.redirectToAddCoursePage = this.redirectToAddCoursePage.bind(this);
+    this.joinGame = this.joinGame.bind(this);
   }
 
   courseRow(game, index) {
@@ -19,11 +21,21 @@ class GamesPage extends React.Component {
     browserHistory.push('/course');
   }
 
-  joinGame(game_id) {
-    return function() {
+  joinGame(game) {
+    
       debugger;
-      browserHistory.push('/game/' + game_id)
-    }
+      const joined_game = game;
+      joined_game.joined = true;
+      let games = this.state.games.map(ex_game => {
+        if(ex_game.id_game == joined_game.id_game){
+          return joined_game;
+        } else {
+          return ex_game;
+        }
+      });
+      
+      toastr.success("Joined Game in " + game.location + " on " + game.game_day);
+      return this.setState({games});
   }
 
   render() {
@@ -49,7 +61,10 @@ GamesPage.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    games: state.games
+    games: state.games.map(game => {
+      game.joined = false;
+      return game;
+    })
   };
 }
 

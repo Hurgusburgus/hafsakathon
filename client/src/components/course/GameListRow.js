@@ -5,7 +5,7 @@ const GameListRow = ({game, joinGameFunc}) => {
   // <td><a href={game.watchHref} target="_blank">Watch</a></td>
   // <Link to={'/course/' + course.id}>{course.title}</Link>
   return (
-    <tr>
+    <tr style={{backgroundColor: game.joined ? "#66FF66" : "#FFF"}}>
       <td>{game.game_type}</td>
       {/* <td>{game.user}</td> */}
       <td>{game.location}</td>
@@ -13,9 +13,10 @@ const GameListRow = ({game, joinGameFunc}) => {
       <td>{game.game_day} </td>
       <td>{game.start_time}</td>
       <td> <input type="submit"
-               value="Join Game"
+               value= {game.joined ? "Joined!" : "Join Game"}
                className="btn btn-primary"
-               onClick={joinGameFunc}/></td>
+               onClick={joinGameFunc}
+               disabled={game.joined}/></td>
     </tr>
   );
 };

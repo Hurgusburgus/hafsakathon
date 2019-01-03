@@ -18,7 +18,7 @@ const GameList = ({games, joinGameFunc}) => {
       </thead>
       <tbody>
       {games.map(game =>
-        <GameListRow key={game.id_game} game={game} joinGameFunc={joinGameFunc(game.id_game)}/>
+        <GameListRow key={game.id_game} game={game} joinGameFunc={() => {return joinGameFunc(game)}}/>
       )};
       </tbody>
     </table>
