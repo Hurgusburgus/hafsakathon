@@ -24,7 +24,7 @@ def add_random_games(num_games=30):
                 game_type = game_types[randint(0, len(game_types) - 1)]
                 game_name = game_names[randint(0, len(game_names) - 1)]
                 if randint(0, 1) == 0:
-                    game_name = creator['firstname'] + "'s " + game_name
+                    game_name = creator['firstname'] + "s " + game_name
                 day = str(randint(1, 28))
                 month = str(randint(1, 12))
                 year = '2019'

@@ -1,9 +1,10 @@
 from bottle import run, route, get, post, delete, put, request, template, response, hook
 
 import json
-# from requests import request
 import sqlite3
 from datetime import datetime
+
+DATABASE = 'recess.db'
 
 
 
@@ -29,7 +30,7 @@ def allow_cors(func):
 @route('/users/<id>')
 def get_user(id):
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM users WHERE id = {}".format(id)
@@ -38,33 +39,40 @@ def get_user(id):
             cur.close()
             return json.dumps(output)
 
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @post('/index')
 @allow_cors
 def add_user_to_users():
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             time = str(datetime.now().time())
-            #postdata = request.body.read()
-            #username = json.loads(postdata)["username"]
             username = request.forms.get('username')
-            firstname = request.forms.get("firstname") if request.forms.get("firstname") else None
-            lastname = request.forms.get("lastname") if request.forms.get("lastname") else None
+            firstname = request.forms.get("firstname") if \
+                request.forms.get("firstname") else None
+            lastname = request.forms.get("lastname") \
+                if request.forms.get("lastname") else None
             birth = request.forms.get("birth")
             sex = request.forms.get("sex")
             city = request.forms.get("city")
-            phone = request.forms.get("phone") if request.forms.get("phone") else None
+            phone = request.forms.get("phone") \
+                if request.forms.get("phone") else None
             email = request.forms.get("email")
             pass_ = request.forms.get("pass")
-            description = request.forms.get("description") if request.forms.get("description") else None
+            description = request.forms.get("description") \
+                if request.forms.get("description") else None
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)" \
-                    " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
-                 username, firstname, lastname, birth, sex, city, phone, email, pass_, description, time)
+            query = """INSERT into users 
+                       (username, firstname, lastname, birth, sex, city, phone,
+                         email,pass_, description, reg_date)
+                        values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}',
+                                '{}', '{}', '{}')""".\
+                format(username, firstname, lastname, birth, sex, city, phone,
+                       email, pass_, description, time)
             cur.execute(query)
             con.commit()
 
@@ -73,15 +81,15 @@ def add_user_to_users():
             cur.close()
             return json.dumps(str(output))
 
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
 
 
 @post('/games/add_users')
 @allow_cors
 def add_user_to_game():
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
 
             con.row_factory = sqlite3.Row
             cur = con.cursor()
@@ -124,8 +132,9 @@ def add_user_to_game():
             con.commit()
 
             return "user {} inserted into game {}".format(user_id,game_id)
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
@@ -139,7 +148,7 @@ def add_user_to_game():
 @allow_cors
 def remove_user_from_user(id):
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             sql = ('DELETE FROM users WHERE id = {}'.format(id))
@@ -148,15 +157,16 @@ def remove_user_from_user(id):
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(output)
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @delete('/games_users/<user_id:int>/<game_id:int>')
 @allow_cors
 def remove_from_game(user_id, game_id):
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             sql = ('DELETE FROM games_users WHERE game_id = {}'
@@ -166,8 +176,9 @@ def remove_from_game(user_id, game_id):
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
             return json.dumps(str(output))
-    except:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
@@ -176,7 +187,7 @@ def remove_from_game(user_id, game_id):
 @allow_cors
 def get_game(game_id):
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM games WHERE id_game = {}".format(game_id)
@@ -193,7 +204,7 @@ def get_game(game_id):
 @allow_cors
 def add_game():
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             creator_id = request.forms.get("creator_id")
             game_type = request.forms.get("game_type") if request.forms.get("game_type") else None
             game_name = request.forms.get("game_name") if request.forms.get("game_name") else None
@@ -214,13 +225,9 @@ def add_game():
 
             con.commit()
 
-            #games_query = "SELECT * FROM games where id = {}".format(game_id)
-            #cur.execute(games_query)
-            #response.status = 201
-            #output = [dict(row) for row in cur.fetchall()]
-            #cur.close()
-    except Exception:
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @route('/search/<game_type>/<date>/<day_of_week>/<hours>/<location>')
@@ -242,7 +249,7 @@ def find_games(game_type, date, day_of_week, hours, location):
     location: the values of location in games table, separated with two dashes --
     """
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             sql = 'SELECT * FROM games WHERE 1=1 '
@@ -268,9 +275,9 @@ def find_games(game_type, date, day_of_week, hours, location):
             output = [dict(row) for row in cur.fetchall()]
             return json.dumps(str(output))
 
-    except Exception:
-        #raise
-        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
     finally:
         cur.close()
@@ -282,7 +289,7 @@ def find_games(game_type, date, day_of_week, hours, location):
 @allow_cors
 def get_all_games():
     try:
-        with sqlite3.connect('recess.db')as con:
+        with sqlite3.connect(DATABASE)as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             query = "SELECT * FROM games"
@@ -321,5 +328,4 @@ def get_game_types():
 
 
 if __name__ == '__main__':
-    # add_random_games(100)
     run(host='localhost', port=8000, debug=True)

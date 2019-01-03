@@ -7,6 +7,12 @@ DATABASE = 'recess.db'
 
 
 def create_users_table():
+    """
+    A method that create the "users" sql table with the following properties:
+    id,username, firstname, lastname ,birth, sex, city, phone, email, pass,
+    description, reg_date (registration date)
+    :return: None
+    """
     with sqlite3.connect(DATABASE)as con:
         cur = con.cursor()
         cur.execute("""DROP TABLE IF EXISTS users""")
@@ -29,6 +35,14 @@ def create_users_table():
         cur.close()
 
 def create_games_table():
+    """
+    A method that create the 'games' table in the database with the following
+    properties:
+                id_game, creator_id,game_name, game_day, start_time, location,
+                min_players, max_players, num_teams
+
+    :return: None
+    """
     with sqlite3.connect(DATABASE)as con:
         cur = con.cursor()
         cur.execute("""DROP TABLE IF EXISTS games""")
@@ -51,6 +65,14 @@ def create_games_table():
         cur.close()
 
 def create_users_games():
+    """
+    A method that create the table 'users_games' which in a week entity
+    describing the users which are in active games
+    the table consists of two foreign keys "user_id" which refrences the id
+    of a user in the users table, and the "game_id" which refrences the id of a
+    game in the "games" table.
+    :return: None
+    """
     with sqlite3.connect('recess.db')as con:
         cur = con.cursor()
         cur.execute("""DROP TABLE IF EXISTS users_games""")
@@ -67,6 +89,7 @@ def create_users_games():
 
 
 def get_schema():
+    ""
     with sqlite3.connect('recess.db') as con:
         cur = con.cursor()
         cur.execute("""SELECT * FROM sqlite_master WHERE type='table'""")
@@ -75,6 +98,11 @@ def get_schema():
 
 
 def show_users(n):
+    """
+    A method that displays a number of entries from the head of the users table
+    :param n: the number of entries to display
+    :return: None
+    """
     print("users content:")
     with sqlite3.connect(DATABASE)as con:
         cur = con.cursor()
@@ -84,6 +112,11 @@ def show_users(n):
 
 
 def show_games(n):
+    """
+    A method that displays a number of entries from the head of the games table
+    :param n: the number of entries to display
+    :return: None
+    """
     print("games content:")
     with sqlite3.connect(DATABASE)as con:
         cur = con.cursor()
@@ -93,6 +126,12 @@ def show_games(n):
 
 
 def show_users_games(n):
+    """
+    A method that displays a number of entries from the head of the user-games
+    table
+    :param n: the number of entries to display
+    :return: None
+    """
     print("user_games content:")
     with sqlite3.connect(DATABASE)as con:
         cur = con.cursor()
@@ -101,23 +140,31 @@ def show_users_games(n):
             print(row)
 
 
-
-def populate_tables():
-    populate_users(200)
-    show_users(5)
-    add_random_games(200)
-    show_games(5)
-
+def populate_tables(n_players,n_games,display_num):
+    """
+    A method that populates the table of the current database with mock values
+    generated randomly
+    :param n_players: the number of users to generate and populate the users
+    table with
+    :param n_games: the number of games to generate and populate the games table
+    with
+    :param display_num: the number of entries to display from each table after
+    it was populated
+    :return: None
+    """
+    populate_users(n_players)
+    show_users(display_num)
+    add_random_games(n_games)
+    show_games(display_num)
+    randomly_add_users_to_games()
+    show_users_games(display_num)
 
 
 def main():
     create_users_table()
     create_games_table()
     create_users_games()
-    populate_tables()
-
-    #create_users_games()
-    #get_schema()
+    populate_tables(n_players=200,n_games=200,display_num=5)
 
 
 if __name__ == "__main__":
