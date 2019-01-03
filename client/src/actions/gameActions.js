@@ -15,12 +15,35 @@ export function updateGameSuccess(game) {
   return {type: types.UPDATE_GAME_SUCCESS, game};
 }
 
+export function joinGameSuccess(game) {
+  return {type: types.JOIN_GAME_SUCCESS, game};
+}
+
 export function loadGames() {
   return function(dispatch) {
     dispatch(beginAjaxCall());
     return axios.get(`http://localhost:8000/games/all`, ).then(response => {
     // return GameApi.getAllGames().then(games => {s
       dispatch(loadGamesSuccess(response.data));
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+export function joinGame(user_id, game_id){
+  return function(dispatch) {
+    dispatch(beginAjaxCall());
+    var bodyFormData = new FormData();
+    bodyFormData.set('user_id', user_id);
+    bodyFormData.set("game_id", game_id);
+    return axios({method: 'POST',
+                        url: 'http://localhost:8000/games/add_users', 
+                        data: bodyFormData,
+                        config: { headers: {'Content-Type': 'multipart/form-data' }}
+                        }).then(response => {
+    // return GameApi.getAllGames().then(games => {s
+      dispatch(joinGamesSuccess(game));
     }).catch(error => {
       throw(error);
     });
