@@ -7,11 +7,11 @@ const GameList = ({games}) => {
     <table className="table">
       <thead>
       <tr>
-        <th>What</th>
-        <th>Who</th>
-        <th>Where</th>
+        <th>Game Type</th>
+        <th>Creator</th>
+        <th>Location</th>
         <th>Description</th>
-        <th>When</th>
+        <th>Start Time</th>
       </tr>
       </thead>
       <tbody>
