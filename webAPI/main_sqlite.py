@@ -1,7 +1,10 @@
 from bottle import run, route, get, post, delete, put, request, template, response, hook
 
 import json
+# from requests import request
 import sqlite3
+from datetime import datetime
+
 
 
 def dict_factory(cursor, row):
@@ -42,7 +45,7 @@ def get_user(id):
 def add_user_to_users():
     try:
         with sqlite3.connect('recess.db')as con:
-
+            time = str(datetime.now().time())
             #postdata = request.body.read()
             #username = json.loads(postdata)["username"]
             username = request.forms.get('username')
@@ -55,13 +58,11 @@ def add_user_to_users():
             email = request.forms.get("email")
             pass_ = request.forms.get("pass")
             description = request.forms.get("description") if request.forms.get("description") else None
-            reg_date = request.forms.get("reg_date") if request.forms.get("reg_date") else None
-
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass, description, reg_date)" \
+            query = "INSERT into users (username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)" \
                     " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
-                 username, firstname, lastname, birth, sex, city, phone, email, pass_, description, reg_date)
+                 username, firstname, lastname, birth, sex, city, phone, email, pass_, description, time)
             cur.execute(query)
             con.commit()
 
@@ -70,9 +71,8 @@ def add_user_to_users():
             cur.close()
             return json.dumps(str(output))
 
-    except Exception as e:
-        return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @post('/games/add_users')
@@ -239,8 +239,9 @@ def find_games(game_type, date, day_of_week, hours, location):
             cur = con.cursor()
             sql = 'SELECT * FROM games WHERE 1=1 '
             if game_type != 'all':
+                game_type = game_type.lower()
                 game_type = '(' + str(game_type.split('--'))[1:-1] + ')'
-                sql += f'AND game_type in {game_type} '
+                sql += f'AND lower(game_type) in {game_type} '
             if date != 'all':
                 date = "'" + date + "'"
                 sql += f'AND game_day = date({date}) '
@@ -252,8 +253,9 @@ def find_games(game_type, date, day_of_week, hours, location):
                 finish = hours[2:]
                 sql += f"AND start_time between {start} AND {finish} "
             if location != 'all':
+                location = location.lower()
                 location = '(' + str(location.split('--'))[1:-1] + ')'
-                sql += f'AND location in {location} '
+                sql += f'AND lower(location) in {location} '
             cur.execute(sql)
             output = [dict(row) for row in cur.fetchall()]
             return json.dumps(str(output))
