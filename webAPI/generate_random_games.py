@@ -12,18 +12,19 @@ def add_random_games(num_games=30):
                       'something-something', 'creativity', 'itc', 'fellows', 'stuff',
                       'bring it on', 'lets random stuff', 'kaduregel', 'kadursal',
                       'whatever', 'game', 'my game', 'please join', 'cool project', 'recess']
-        query = """SELECT id FROM users"""
+        query = """SELECT id, firstname FROM users"""
         cur.execute(query)
-        users = [dict(row)['id'] for row in cur.fetchall()]
+        users = [dict(row) for row in cur.fetchall()]
         if len(users) == 0:
             print('Found 0 users, not generating games')
         else:
             for i in range(num_games):
-                creator_id = users[randint(0, len(users) - 1)]
+                creator = users[randint(0, len(users) - 1)]
+                creator_id = creator['id']
                 game_type = game_types[randint(0, len(game_types) - 1)]
                 game_name = game_names[randint(0, len(game_names) - 1)]
                 if randint(0, 1) == 0:
-                    game_name = 'user ' + str(creator_id) + game_name
+                    game_name = creator['firstname'] + "'s " + game_name
                 day = str(randint(1, 28))
                 month = str(randint(1, 12))
                 year = '2019'
