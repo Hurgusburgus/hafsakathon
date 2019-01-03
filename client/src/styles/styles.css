@@ -14,3 +14,11 @@ a.active {
 nav {
   padding-top: 20px;
 }
+
+#create_game_header {
+  text-align: center;
+}
+
+#create_game_form {
+  align-content: stretch;
+}

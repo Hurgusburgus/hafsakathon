@@ -2,29 +2,37 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as gameActions from '../../actions/gameActions';
-import GameList from './GameList';
+import UserList from './UserList';
 import {browserHistory} from 'react-router';
 import axios from 'axios'
 
 class GamePage extends React.Component {
   constructor(props, context) {
     super(props, context);
-    const game_id = props.game_id
     this.state = {
-      game_id,
+      users: [],
       game: Object.assign({}, props.game)
     };
     this.redirectToGamesPage = this.redirectToGamesPage.bind(this);
+    this.getUsers = this.getUsers.bind(this);
+    this.getUsers(props.game.id_game)
 
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.game.id_game != nextProps.game.id_game) {
+      this.setState({game: Object.assign({}, nextProps.game)});
+    }
+    this.getUsers(nextProps.game.id_game);
+}
 
-  componentDidMount() {
-      axios.get(`http://localhost:8000/games/all`, ).then(response => {
-        this.users = response.data;
+  getUsers(game_id) {
+      axios.get(`http://localhost:8000/get_users_for_game/` + game_id ).then(response => {
+        const users = response.data;
+        this.setState({users})
         }).catch(error => {
             throw(error);
         })
-  }
+  } 
 
   courseRow(game, index) {
     return <div key={index}>{game.name}</div>;
@@ -34,24 +42,17 @@ class GamePage extends React.Component {
     browserHistory.push('/games');
   }
 
-  joinGame(game_id) {
-    return function() {
-      debugger;
-      browserHistory.push('/game/' + game_id)
-    }
-  }
-
   render() {
-    const {games} = this.props;
+    const users = this.state.users;
 
     return (
       <div>
-        <h1>Games</h1>
+        <h1>{"Users in game " + this.state.game.game_name }</h1>
         <input type="submit"
                value="Back to games list"
                className="btn btn-primary"
                onClick={this.redirectToGamesPage}/>
-        <GameList games={games} joinGameFunc={this.joinGame}/>
+        <UserList users={users}/>
       </div>
     );
   }
@@ -70,14 +71,23 @@ function getGameById(games, id) {
 
 function mapStateToProps(state, ownProps) {
   const gameId = ownProps.params.id;
-  
+  let game = {id: '', 
+              game_type: '', 
+              game_name: '',
+              date: '', 
+              time: '', 
+              location: '', 
+              min_players: '',
+              max_players: '',
+              num_teams: ''
+            };
+
   if (gameId && state.games.length > 0) {
     game = getGameById(state.games, gameId);
   }
 
-  return {
-    game_id: gameId,  
-    game: state.games
+  return {  
+    game: game
   };
 }
 
