@@ -17,7 +17,7 @@ const GameList = ({games}) => {
       <tbody>
       {games.map(game =>
         <GameListRow key={game.id_game} game={game}/>
-      )}
+      )};
       </tbody>
     </table>
   );
