@@ -8,9 +8,10 @@ const GameList = ({games, joinGameFunc}) => {
       <thead>
       <tr>
         <th>Game Type</th>
-        <th>Creator</th>
+        {/* <th>Creator</th> */}
         <th>Location</th>
         <th>Description</th>
+        <th>Date</th>
         <th>Start Time</th>
         <th></th>
       </tr>

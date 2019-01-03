@@ -7,10 +7,11 @@ const GameListRow = ({game, joinGameFunc}) => {
   return (
     <tr>
       <td>{game.game_type}</td>
-      <td>{game.user}</td>
+      {/* <td>{game.user}</td> */}
       <td>{game.location}</td>
       <td><Link to={'/game/' + game.id_game}>{game.game_name}</Link></td>
-      <td>{game.game_day} {game.start_day}</td>
+      <td>{game.game_day} </td>
+      <td>{game.start_time}</td>
       <td> <input type="submit"
                value="Join Game"
                className="btn btn-primary"
