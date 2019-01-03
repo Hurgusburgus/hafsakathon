@@ -5,8 +5,7 @@ import json
 import sqlite3
 from datetime import datetime
 
-from generate_random_games import add_random_games
-from randomly_add_users_to_games import randomly_add_users_to_games
+
 
 
 def dict_factory(cursor, row):
@@ -298,10 +297,10 @@ def get_all_games():
 @route('/locations')
 @allow_cors
 def get_locations():
-    return json.dumps([{"value":"TLV","label":'Tel-Aviv'},
-                       {"value": "JRS", "label": 'Jerusalem'},
-                       {"value": "NTN", "label": 'Netanya'},
-                       {"value": "JF", "label": 'Jaffa'}])
+    return json.dumps([{"value":"Tel-Aviv","label":'Tel-Aviv'},
+                       {"value": "Jerusalem", "label": 'Jerusalem'},
+                       {"value": "Netanya", "label": 'Netanya'},
+                       {"value": "Jaffa", "label": 'Jaffa'}])
 
 
 @route('/game_types')
