@@ -6,10 +6,29 @@ import GameForm from './GameForm';
 import {authorsFormattedForDropdown} from '../../selectors/selectors';
 import toastr from 'toastr';
 
+const game_types = [{value: "basketball", label: "Basketball"}, 
+                   {value: "dodgeball", label: "Dodgeball"}, 
+                   {value: "frisbee", label: "Frisbee"}, 
+                   {value: "gridiron", label: "Gridiron"}, 
+                   {value: "hide_and_seek", label: "Hide and seek"}, 
+                   {value: "hockey", label: "Hockey"},
+                   {value: "running", label: "Running"}, 
+                   {value: "soccer", label: "Soccer"}, 
+                   {value: "table_tennis", label: "Table tennis"}, 
+                   {value: "tennis", label: "Tennis"}, 
+                   {value: "volleyball", label: "Volleyball"},
+                   {value: "other", label: "Other"}]
+
+const locations = [
+                   {value: 'Tel-Aviv', label: 'Tel Aviv'}, 
+                   {value: 'Jaffa', label: 'Jaffa'},
+                   {value: 'Jerusalem', label: 'Jerusalem'},
+                   {value: 'Netanya', label: 'Netanya'}
+                   ]
+
 export class ManageGamePage extends React.Component {
   constructor(props, context) {
     super(props, context);
-    console.log(props)
     this.state = {
       game: Object.assign({}, props.game),
       errors: {},
@@ -37,10 +56,10 @@ export class ManageGamePage extends React.Component {
     let formIsValid = true;
     let errors = {};
 
-    if (this.state.game.title.length < 5) {
-      errors.title = 'Title must be at least 5 characters.';
-      formIsValid = false;
-    }
+    // if (this.state.game.title.length < 5) {
+    //   errors.title = 'Title must be at least 5 characters.';
+    //   formIsValid = false;
+    // }
 
     this.setState({errors: errors});
     return formIsValid;
@@ -73,8 +92,8 @@ export class ManageGamePage extends React.Component {
   render() {
     return (
       <GameForm
-        locations={this.props.locations}
-        game_types={this.props.game_types}
+        locations={locations}
+        game_types={game_types}
         onChange={this.updateGameState}
         onSave={this.saveGame}
         game={this.state.game}
@@ -87,8 +106,8 @@ export class ManageGamePage extends React.Component {
 
 ManageGamePage.propTypes = {
   game: PropTypes.object.isRequired,
-  locations: PropTypes.array.isRequired,
-  game_types: PropTypes.array.isRequired,
+  // locations: PropTypes.array.isRequired,
+  // game_types: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired
 };
 
@@ -104,13 +123,18 @@ function getGameById(games, id) {
 }
 
 function mapStateToProps(state, ownProps) {
-  console.log("state: ")
-  console.log(state)
-  console.log("ownProps: ")
-  console.log(ownProps)
   const gameId = ownProps.params.id;
 
-  let game = {id: '', watchHref: '', title: '', authorId: '', length: '', category: ''};
+  let game = {id: '', 
+              game_type: '', 
+              game_name: '',
+              date: '', 
+              time: '', 
+              location: '', 
+              min_players: '',
+              max_players: '',
+              num_teams: ''
+            };
 
   if (gameId && state.games.length > 0) {
     game = getGameById(state.games, gameId);

@@ -5,6 +5,7 @@ import json
 import sqlite3
 from datetime import datetime
 
+from generate_random_games import add_random_games
 
 
 def dict_factory(cursor, row):
@@ -42,6 +43,7 @@ def get_user(id):
 
 
 @post('/index')
+@allow_cors
 def add_user_to_users():
     try:
         with sqlite3.connect('recess.db')as con:
@@ -122,9 +124,8 @@ def add_user_to_game():
             con.commit()
 
             return "user {} inserted into game {}".format(user_id,game_id)
-    except Exception as e:
-        return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 
@@ -135,6 +136,7 @@ def add_user_to_game():
 
 
 @delete('/users/<id:int>')
+@allow_cors
 def remove_user_from_user(id):
     try:
         with sqlite3.connect('recess.db')as con:
@@ -151,6 +153,7 @@ def remove_user_from_user(id):
 
 
 @delete('/games_users/<user_id:int>/<game_id:int>')
+@allow_cors
 def remove_from_game(user_id, game_id):
     try:
         with sqlite3.connect('recess.db')as con:
@@ -167,13 +170,16 @@ def remove_from_game(user_id, game_id):
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+
+
 @route('/games/<game_id>')
+@allow_cors
 def get_game(game_id):
     try:
         with sqlite3.connect('recess.db')as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            query = "SELECT * FROM games WHERE game_id = {}".format(game_id)
+            query = "SELECT * FROM games WHERE id_game = {}".format(game_id)
             cur.execute(query)
             output = [dict(row) for row in cur.fetchall()]
             cur.close()
@@ -184,11 +190,13 @@ def get_game(game_id):
 
 
 @post('/games')
+@allow_cors
 def add_game():
     try:
         with sqlite3.connect('recess.db')as con:
-            game_type = request.forms.get("game_type") #if request.forms.get("game_type") else None
-            game_name = request.forms.get("game_name") #if request.forms.get("game_name") else None
+            creator_id = request.forms.get("creator_id")
+            game_type = request.forms.get("game_type") if request.forms.get("game_type") else None
+            game_name = request.forms.get("game_name") if request.forms.get("game_name") else None
             game_day = request.forms.get("game_day")
             start_time = request.forms.get("start_time")
             location = request.forms.get("location") if request.forms.get("location") else None
@@ -197,8 +205,8 @@ def add_game():
             num_teams = request.forms.get("num_teams")
 
             query = """INSERT into games (game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams) 
-                    values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
-                format(game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
+                    values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
+                format(creator_id, game_type, game_name, game_day, start_time, location, min_players, max_players, num_teams)
 
             con.row_factory = sqlite3.Row
             cur = con.cursor()
@@ -211,12 +219,12 @@ def add_game():
             #response.status = 201
             #output = [dict(row) for row in cur.fetchall()]
             #cur.close()
-    except Exception as e:
-        return e
-        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+    except Exception:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
 @route('/search/<game_type>/<date>/<day_of_week>/<hours>/<location>')
+@allow_cors
 def find_games(game_type, date, day_of_week, hours, location):
     """
     For each of the search parameters, pass a value of 'all' if
@@ -297,7 +305,7 @@ def get_locations():
 
 @route('/game_types')
 @allow_cors
-def get_locations():
+def get_game_types():
     return json.dumps([{"value": "basketball", "label": 'Basketball'},
                        {"value": "dodgeball", "label": 'Dodgeball'},
                        {"value": "frisbee", "label": 'Frisbee'},
@@ -312,12 +320,6 @@ def get_locations():
                        {"value": "other", "label": 'Other'}])
 
 
-
-
-
-
-
-
-
 if __name__ == '__main__':
+    add_random_games(100)
     run(host='localhost', port=8000, debug=True)
