@@ -28,6 +28,8 @@ with sqlite3.connect('recess.db')as con:
 with sqlite3.connect('recess.db')as con:
     cur = con.cursor()
     # crate table
+    cur.execute("""DROP TABLE IF EXISTS games""")
+    con.commit()
     cur.execute("""CREATE TABLE IF NOT EXISTS games (
     id_game integer PRIMARY KEY AUTOINCREMENT,
     creator_id integer NOT NULL,
