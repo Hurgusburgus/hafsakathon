@@ -4,11 +4,12 @@ import SelectInput from '../common/SelectInput';
 
 const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors}) => {
   return (
-    <form>
-      <h1>Create Game</h1>
+    <form id="create_game_form">
+      <h1 id="create_game_header">Create Game</h1>
       <SelectInput
         name="game_type"
         label="Game Type"
+        class="custom-select"
         value={game.game_type}
         options={game_types}
         onChange={onChange}/>
@@ -19,22 +20,23 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
         value={game.game_name}
         onChange={onChange}/>
 
-      <label for="date">Date of Game</label>
-      <input
-        name="date"
-        type="date"
-        label="date"
-        value={game.date}
-        onChange={onChange}        />
+      <div class="row row-space">
+        <label for="date">Date of Game</label>
+        <input
+          name="date"
+          type="date"
+          label="date"
+          value={game.date}
+          onChange={onChange}        />
 
-      <label for="time">Start Time: </label>  
-      <input
-        name="time"
-        type="time"
-        label="Start Time"
-        value={game.time}
-        onChange={onChange}/>
-
+        <label for="time">Start Time: </label>  
+        <input
+          name="time"
+          type="time"
+          label="Start Time"
+          value={game.time}
+          onChange={onChange}/>
+      </div>
       <br/>
 
       <SelectInput
@@ -46,36 +48,37 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
 
       <br/> <br/>
 
-      <label for="min_players">Min Players</label>
-      <input
-        name="min_players"
-        type="number"
-        class="quantity"
-        label="Minimum Number of Players"
-        value={game.min_players}
-        onChange={onChange} />
+      <div class="row row-space">
+        <label for="min_players">Min Players</label>
+        <input
+          name="min_players"
+          type="number"
+          class="quantity"
+          label="Minimum Number of Players"
+          value={game.min_players}
+          onChange={onChange} />
 
-      <label for="max_players">Max Players</label>
-      <input
-        name="max_players"
-        type="number"
-        class="quantity"
-        label="Maximum Number of Players"
-        value={game.max_players}
-        onChange={onChange}/>
+        <label for="max_players">Max Players</label>
+        <input
+          name="max_players"
+          type="number"
+          class="quantity"
+          label="Maximum Number of Players"
+          value={game.max_players}
+          onChange={onChange}/>
 
-      <br/>
+        <br/>
 
-      <label for="num_teams">Number of Teams</label>
-      <input
-        name="num_teams"
-        type="number"
-        class="quantity"
-        label="Number of Teams"
-        value={game.num_teams}
-        onChange={onChange}/>
-
-      <br/> <br/> <br/>
+        <label for="num_teams">Number of Teams</label>
+        <input
+          name="num_teams"
+          type="number"
+          class="quantity"
+          label="Number of Teams"
+          value={game.num_teams}
+          onChange={onChange}/>
+        </div>
+      <br/> <br/>
 
       <TextInput
         name="description"
