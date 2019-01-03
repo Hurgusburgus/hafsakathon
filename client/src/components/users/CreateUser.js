@@ -25,6 +25,7 @@ const UserForm = ({user, locations, onSave, onChange, saving}) => {
         value={user.last_name}
         onChange={onChange}/>
 
+      <label for="birth">Birthdate</label>
       <input
         name="birth"
         type="date"
@@ -32,21 +33,25 @@ const UserForm = ({user, locations, onSave, onChange, saving}) => {
         value={user.birth}
         onChange={onChange}/>
 
+      <br/> <br/>
+
       <label for="sex"><b> Sex (M/F/N) </b></label>
       <select name="sex">
           <option value="M">Male</option>
           <option value="F">Female</option>
-          <option value="N" selected>Non-binary // Prefer to not answer</option>
+          <option value="N" selected>Non-binary // NA</option>
       </select>
         
+      <br/> <br/>
+      
       <SelectInput
         name="location"
         label="Location"
         value={user.location}
-        defaultOption="tag"
         options={locations}
         onChange={onChange}/>
 
+      <label for="phone">Phone Number</label>
       <input
         name="phone"
         type="number"
@@ -54,18 +59,25 @@ const UserForm = ({user, locations, onSave, onChange, saving}) => {
         value={user.phone}
         onChange={onChange}/>
 
-      <TextInput
+      <br/> <br/>
+
+      <label for="email">Email</label>
+      <input 
         name="email"
         label="Email"
+        type="email"
         value={user.email}
         onChange={onChange}/>
 
+      <label for="pass">Password</label>
       <input
         name="pass"
         type="password"
         label="Password"
         value={user.pass}
         onChange={onChange}/>
+
+      <br/> <br/>
 
       <TextInput
         name="description"
