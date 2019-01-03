@@ -13,11 +13,11 @@ function locationReducer(state = initialState.locations, action) {
 function gameTypeReducer(state = initialState.game_types, action) {
     switch (action.type) {
       case types.LOAD_GAME_TYPES_SUCCESS:
-        return action.game_types;
+        return  action.game_types;
   
       default:
         return state;
     }
 }
 
-export default {locationReducer, gameTypeReducer}
+export {locationReducer, gameTypeReducer}

@@ -5,8 +5,7 @@ const GameListRow = ({game}) => {
   // <td><a href={game.watchHref} target="_blank">Watch</a></td>
   // <Link to={'/course/' + course.id}>{course.title}</Link>
   return (
-    <div style={{display='flex',
-                justifyContent='space-between'}}>
+    <div>
       <div>{game.gameType}</div>
       <div>{game.user}</div>
       <div>{game.location}</div>
