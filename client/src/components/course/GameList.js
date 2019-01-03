@@ -11,12 +11,8 @@ const GameList = ({games}) => {
         <th>Creator</th>
         <th>Location</th>
         <th>Description</th>
-<<<<<<< HEAD
         <th>When</th>
         <th></th>
-=======
-        <th>Start Time</th>
->>>>>>> 244c96f578bb4d017c5ecdea748d3ca9bfde5316
       </tr>
       </thead>
       <tbody>

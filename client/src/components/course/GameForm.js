@@ -44,10 +44,13 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
         options={locations}
         onChange={onChange}/>
 
+      <br/> <br/>
+
       <label for="min_players">Min Players</label>
       <input
         name="min_players"
         type="number"
+        class="quantity"
         label="Minimum Number of Players"
         value={game.min_players}
         onChange={onChange} />
@@ -56,17 +59,28 @@ const GameForm = ({game, locations, game_types, onSave, onChange, saving, errors
       <input
         name="max_players"
         type="number"
+        class="quantity"
         label="Maximum Number of Players"
         value={game.max_players}
         onChange={onChange}/>
 
       <br/>
+
       <label for="num_teams">Number of Teams</label>
       <input
         name="num_teams"
         type="number"
+        class="quantity"
         label="Number of Teams"
         value={game.num_teams}
+        onChange={onChange}/>
+
+      <br/> <br/> <br/>
+
+      <TextInput
+        name="description"
+        label="Custom Description"
+        value={game.description}
         onChange={onChange}/>
 
       <br/>
