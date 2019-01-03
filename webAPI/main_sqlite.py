@@ -1,12 +1,10 @@
-from bottle import run, route, get, post, delete, put, request, template, response, hook
+from bottle import run, route, get, post, delete, put, request, template, response, hook, static_file
 
 import json
 import sqlite3
 from datetime import datetime
 
 DATABASE = 'recess.db'
-
-
 
 
 def dict_factory(cursor, row):
@@ -364,6 +362,11 @@ def get_users_for_game(id_game):
             return json.dumps(output)
     except:
         return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+@route('/register')
+@allow_cors
+def server_static(filepath="register.html"):
+    return static_file(filepath, root='../client/src/components/register') 
 
 
 if __name__ == '__main__':
