@@ -33,7 +33,7 @@ def add_random_games(num_games=30):
                 min_players = randint(4, 12)
                 max_players = randint(min_players, min_players * 3)
                 num_teams = randint(2, 4)
-                query = """INSERT into games (game_type, game_name, game_day, start_time, 
+                query = """INSERT into games (creator_id, game_type, game_name, game_day, start_time, 
                 location, min_players, max_players, num_teams) 
                 values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".\
                             format(creator_id, game_type, game_name, game_day, start_time,
