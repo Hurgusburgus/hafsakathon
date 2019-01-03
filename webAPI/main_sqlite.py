@@ -75,6 +75,64 @@ def add_user_to_users():
         #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
 
 
+@post('/games/add_users')
+@allow_cors
+def add_user_to_game():
+    try:
+        with sqlite3.connect('recess.db')as con:
+
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+
+            user_id = request.forms.get("user_id")
+            game_id = request.forms.get("game_id")
+
+            is_in_game_querry = """SELECT *
+                            FROM users
+                            WHERE id == {}""".format(user_id)
+
+            cur.execute(is_in_game_querry)
+            is_in_game = str(cur.fetchone())
+            if is_in_game:
+                return "User Already in Game!"
+
+
+            curr_players_query = """ SELECT  COUNT(*) 
+                             FROM  games_useres
+                             WHERE game_id == {}""".format(game_id)
+
+            cur.execute(curr_players_query)
+            curr_players = int(cur.fetchone())
+
+            max_players_querry = """ SELECT max_players
+                                     FROM games
+                                     WHERE game_id == {}""".format(game_id)
+
+            cur.execute(max_players_querry)
+            max_players = int(cur.fetchone())
+
+            if curr_players > max_players:
+                return "Cant Add user, game reached "\
+                        "maximum users limit for the game"
+
+            insertion_query = """INSERT INTO games_users( game_id, user_id)
+                                 VALUES({}, {})""".format(game_id,user_id)
+
+            cur.execute(insertion_query)
+            con.commit()
+
+            return "user {} inserted into game {}".format(user_id,game_id)
+    except Exception as e:
+        return e
+        #return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": 500})
+
+
+
+
+
+
+
+
 
 @delete('/users/<id:int>')
 def remove_user_from_user(id):
@@ -229,15 +287,30 @@ def get_all_games():
 @route('/locations')
 @allow_cors
 def get_locations():
-    return json.dumps(['Tel-Aviv','Jerusalem', 'Netanya', 'Jaffa'])
+    return json.dumps([{"value":"TLV","label":'Tel-Aviv'},
+                       {"value": "JRS", "label": 'Jerusalem'},
+                       {"value": "NTN", "label": 'Netanya'},
+                       {"value": "JF", "label": 'Jaffa'}])
 
 
 @route('/game_types')
 @allow_cors
 def get_locations():
-    return json.dumps(["basketball", "dodgeball", "frisbee", "gridiron", "hide_and_seek", "hockey",
-            "running", "soccer", "table_tennis", "tennis", "volleyball",
-            "other"])
+    return json.dumps([{"value": "basketball", "label": 'Basketball'},
+                       {"value": "dodgeball", "label": 'Dodgeball'},
+                       {"value": "frisbee", "label": 'Frisbee'},
+                       {"value": "gridiron", "label": 'Gidiron'},
+                       {"value": "hide_and_seek", "label": 'Hide and seek'},
+                       {"value": "hockey", "label": 'Hockey'},
+                       {"value": "running", "label": 'Running'},
+                       {"value": "soccer", "label": 'Soccer'},
+                       {"value": "ping_pong", "label": 'Ping Pong'},
+                       {"value": "tennis", "label": 'Tennis'},
+                       {"value": "volleyball", "label": 'Volleyball'},
+                       {"value": "other", "label": 'Other'}])
+
+
+
 
 
 
