@@ -184,6 +184,7 @@ def get_game(game_id):
 
 
 @post('/games')
+@allow_cors
 def add_game():
     try:
         with sqlite3.connect('recess.db')as con:
@@ -310,13 +311,6 @@ def get_locations():
                        {"value": "tennis", "label": 'Tennis'},
                        {"value": "volleyball", "label": 'Volleyball'},
                        {"value": "other", "label": 'Other'}])
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

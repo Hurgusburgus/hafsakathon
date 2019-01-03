@@ -29,7 +29,6 @@ const locations = [
 export class ManageGamePage extends React.Component {
   constructor(props, context) {
     super(props, context);
-    debugger;
     this.state = {
       game: Object.assign({}, props.game),
       errors: {},
@@ -57,10 +56,10 @@ export class ManageGamePage extends React.Component {
     let formIsValid = true;
     let errors = {};
 
-    if (this.state.game.title.length < 5) {
-      errors.title = 'Title must be at least 5 characters.';
-      formIsValid = false;
-    }
+    // if (this.state.game.title.length < 5) {
+    //   errors.title = 'Title must be at least 5 characters.';
+    //   formIsValid = false;
+    // }
 
     this.setState({errors: errors});
     return formIsValid;
@@ -124,7 +123,6 @@ function getGameById(games, id) {
 }
 
 function mapStateToProps(state, ownProps) {
-  debugger;
   const gameId = ownProps.params.id;
 
   let game = {id: '', 
