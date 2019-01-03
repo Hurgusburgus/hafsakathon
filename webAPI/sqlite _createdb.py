@@ -48,7 +48,7 @@ def create_games_table():
         cur.execute("""DROP TABLE IF EXISTS games""")
         con.commit()
         cur.execute("""CREATE TABLE IF NOT EXISTS games (
-                        id_game integer PRIMARY KEY AUTOINCREMENT,
+                        game_id integer PRIMARY KEY AUTOINCREMENT,
                         creator_id integer NOT NULL,
                         game_type text,
                         game_name text,
@@ -56,7 +56,7 @@ def create_games_table():
                         start_time text NOT NULL,
                         location text,
                         min_players integer NOT NULL DEFAULT 2,
-                        max_players integers,
+                        max_players int,
                         num_teams integer DEFAULT 0,
                         FOREIGN KEY (creator_id) REFERENCES users(id));
                      """)

@@ -5,7 +5,7 @@ def randomly_add_users_to_games():
     with sqlite3.connect('recess.db')as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
-        query = """SELECT id_game, creator_id, min_players, max_players
+        query = """SELECT game_id, creator_id, min_players, max_players
         FROM games"""
         cur.execute(query)
         games = [dict(row) for row in cur.fetchall()]
@@ -23,6 +23,6 @@ def randomly_add_users_to_games():
                         users_added.append(random_player)
                         query = """INSERT INTO users_games
                         (game_id, user_id)
-                        VALUES ('{}', '{}')""".format(game['id_game'], random_player)
+                        VALUES ('{}', '{}')""".format(game['game_id'], random_player)
                         cur.execute(query)
             con.commit()
